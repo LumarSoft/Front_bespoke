@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    // AVIF + WebP: máxima compresión sin sacrificar calidad.
+    formats: ["image/avif", "image/webp"],
+    // Permitimos calidad alta para las imágenes hero (day/night hi-res).
+    qualities: [75, 90],
+  },
 };
 
 export default nextConfig;
