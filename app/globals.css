@@ -1,26 +1,273 @@
 @import "tailwindcss";
 
+/*
+  Paleta BESPOKE — derivada del logo (wordmark en trazo blanco, /public/logo-2048x870.png).
+  Un logo blanco necesita fondos oscuros para funcionar sin variante de color:
+  el header y el hero usan --color-noir. El resto del sitio respira en --color-hueso
+  (hueso/off-white) con grises cálidos, y un único acento terracota para momentos puntuales.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-noir: #121110;
+  --color-noir-soft: #1c1a18;
+  --color-hueso: #f4efe6;
+  --color-arena: #e9e2d3;
+  --color-gris-calido: #8a8377;
+  --color-gris-calido-oscuro: #57524a;
+  --color-acento: #b5652b;
+  --color-acento-soft: #d99a63;
+
+  --background: var(--color-hueso);
+  --foreground: var(--color-noir);
 }
 
 @theme inline {
+  --color-noir: var(--color-noir);
+  --color-noir-soft: var(--color-noir-soft);
+  --color-hueso: var(--color-hueso);
+  --color-arena: var(--color-arena);
+  --color-gris-calido: var(--color-gris-calido);
+  --color-gris-calido-oscuro: var(--color-gris-calido-oscuro);
+  --color-acento: var(--color-acento);
+  --color-acento-soft: var(--color-acento-soft);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+
+  --ease-buttery: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-noir);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-acento);
+  color: var(--color-hueso);
+}
+
+/*
+  Estructura de ScrollSmoother. El fixed/overflow-hidden solo se aplica cuando
+  JS confirmó que ScrollSmoother está activo (clase en <html>): si el usuario
+  tiene prefers-reduced-motion, SmoothScrollProvider no crea el smoother y estos
+  wrappers quedan en flujo normal para no romper el scroll nativo.
+*/
+html.has-smooth-scroll #smooth-wrapper {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+html.has-smooth-scroll #smooth-content {
+  overflow: visible;
+  width: 100%;
+}
+
+/* Hatched placeholder container for real photography slots (see plan.md) */
+.img-placeholder {
+  position: relative;
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-noir) 8%, transparent) 0px,
+    color-mix(in srgb, var(--color-noir) 8%, transparent) 2px,
+    transparent 2px,
+    transparent 12px
+  );
+  background-color: color-mix(in srgb, var(--color-gris-calido) 18%, var(--color-arena));
+  border: 1px solid color-mix(in srgb, var(--color-noir) 15%, transparent);
+}
+
+.img-placeholder--dark {
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-hueso) 10%, transparent) 0px,
+    color-mix(in srgb, var(--color-hueso) 10%, transparent) 2px,
+    transparent 2px,
+    transparent 12px
+  );
+  background-color: color-mix(in srgb, var(--color-hueso) 10%, var(--color-noir));
+  border: 1px solid color-mix(in srgb, var(--color-hueso) 15%, transparent);
+}
+
+.img-placeholder__label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Texto knockout (ClipText): la imagen o el placeholder rayado se ve a través de las letras. */
+.clip-text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.clip-text--placeholder {
+  background-image: repeating-linear-gradient(
+    135deg,
+    var(--color-gris-calido) 0px,
+    var(--color-gris-calido) 2px,
+    var(--color-arena) 2px,
+    var(--color-arena) 12px
+  );
+}
+
+/*
+  Lenguaje "dibujo técnico": reemplaza la dependencia de fotos en secciones que
+  todavía no las necesitan (Servicios, Proceso, CTA). Grilla fina tipo papel
+  milimetrado + marcas de registro en las esquinas, como una lámina de plano.
+*/
+.blueprint-grid {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-noir) 6%, transparent) 0px,
+      color-mix(in srgb, var(--color-noir) 6%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-noir) 6%, transparent) 0px,
+      color-mix(in srgb, var(--color-noir) 6%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}
+
+.blueprint-grid--dark {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}
+
+.drafting-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: currentColor;
+  opacity: 0.4;
+}
+
+.drafting-corner--tl {
+  top: 1.25rem;
+  left: 1.25rem;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--tr {
+  top: 1.25rem;
+  right: 1.25rem;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+
+.drafting-corner--bl {
+  bottom: 1.25rem;
+  left: 1.25rem;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--br {
+  bottom: 1.25rem;
+  right: 1.25rem;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/*
+  Proceso: toggle entre flujo normal (mobile/reduced-motion, contenido
+  siempre visible y accesible) y el modo pinneado de escritorio (pasos
+  apilados unos sobre otros, HUD de stats flotante). Ver components/sections/Proceso.tsx.
+*/
+.proceso-pin.is-pinned {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.proceso-steps.is-pinned > [data-proceso-step] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.proceso-stats.is-pinned {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4rem;
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
+
+/* Nav underline sweep (hover) */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-buttery);
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Custom cursor */
+.cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 9999px;
+  background: var(--color-noir);
+  mix-blend-mode: exclusion;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .cursor-dot {
+    display: none;
+  }
 }
