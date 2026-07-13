@@ -5,11 +5,12 @@ import Image from "next/image";
 import { useSplitReveal } from "@/hooks/useSplitReveal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { prefersReducedMotion } from "@/lib/motionPrefs";
+import WebGLCanvas from "@/components/WebGLCanvas";
 
 /**
  * Hero oscuro: el logo real (blanco) necesita fondo oscuro para tener
- * contraste, así que esta es la única sección que deja ver la capa WebGL de
- * fondo (noir + grano, ver WebGLCanvas). El resto del sitio es hueso/claro.
+ * contraste, así que esta es la única sección que monta la capa WebGL de
+ * fondo (noir + grano, ver WebGLCanvas), contenida a esta sección.
  */
 export default function Hero() {
   const eyebrowRef = useSplitReveal<HTMLParagraphElement>({ type: "lines", y: 20 });
@@ -51,9 +52,10 @@ export default function Hero() {
 
   return (
     <section
-      id="top"
+      id="cierre"
       className="relative flex min-h-screen flex-col justify-between overflow-hidden px-6 pt-36 pb-14 text-hueso md:px-10"
     >
+      <WebGLCanvas />
       <div className="blueprint-grid--dark pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <p

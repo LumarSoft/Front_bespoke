@@ -9,6 +9,11 @@ import Studio from "@/components/studio";
 import Contact from "@/components/contact";
 import Footer from "@/components/footer";
 
+// Secciones de Marcelo, insertadas al final antes del footer
+import MarceObra from "@/components/sections/Obra";
+import MarceProceso from "@/components/sections/Proceso";
+import MarceHero from "@/components/sections/Hero";
+
 export default function Home() {
   return (
     <>
@@ -22,6 +27,9 @@ export default function Home() {
         <Stats />
         <Studio />
         <Contact />
+        <MarceObra />
+        <MarceProceso />
+        <MarceHero />
       </main>
       <Footer />
     </>

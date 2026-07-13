@@ -2,6 +2,7 @@
 
 import { ReactLenis } from "lenis/react";
 import { type ReactNode } from "react";
+import GsapScrollSync from "@/components/GsapScrollSync";
 
 /**
  * Smooth-scroll global con Lenis. Respeta prefers-reduced-motion
@@ -19,6 +20,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
         touchMultiplier: 1.5,
       }}
     >
+      <GsapScrollSync />
       {children}
     </ReactLenis>
   );

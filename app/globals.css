@@ -174,3 +174,102 @@ html.lenis body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============================================================
+   Secciones de Marcelo insertadas al final (Obra, Proceso, Hero):
+   paleta oscura propia + utilidades de esas secciones únicamente.
+   ============================================================ */
+:root {
+  --color-noir: #121110;
+  --color-hueso: #f4efe6;
+  --color-acento: #b5652b;
+}
+
+@theme inline {
+  --color-noir: var(--color-noir);
+  --color-hueso: var(--color-hueso);
+  --color-acento: var(--color-acento);
+}
+
+/* Grilla "dibujo técnico" (Hero, Proceso) */
+.blueprint-grid--dark {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}
+
+/* Marcas de registro de esquina (DraftingFrame, usado en Obra y Proceso) */
+.drafting-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: currentColor;
+  opacity: 0.4;
+}
+
+.drafting-corner--tl {
+  top: 1.25rem;
+  left: 1.25rem;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--tr {
+  top: 1.25rem;
+  right: 1.25rem;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+
+.drafting-corner--bl {
+  bottom: 1.25rem;
+  left: 1.25rem;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--br {
+  bottom: 1.25rem;
+  right: 1.25rem;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/*
+  Proceso: toggle entre flujo normal (mobile/reduced-motion) y el modo
+  pinneado de escritorio (pasos apilados, HUD de stats flotante).
+  Ver components/sections/Proceso.tsx.
+*/
+.proceso-pin.is-pinned {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.proceso-steps.is-pinned > [data-proceso-step] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.proceso-stats.is-pinned {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4rem;
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
+}
