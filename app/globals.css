@@ -1,26 +1,275 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Bespoke Arquitectura — sistema de diseño
+   Paleta: hueso / hormigón / tinta / terracota (hora dorada)
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bone: #e9e5dc; /* fondo cálido, off-white */
+  --paper: #f4f1ea; /* superficies claras */
+  --ink: #17140f; /* casi negro cálido */
+  --ink-soft: #3c3730;
+  --concrete: #8d867a; /* gris hormigón */
+  --line: rgba(23, 20, 15, 0.12);
+  --clay: #b1542c; /* terracota — acento (hora dorada) */
+  --clay-soft: #c67a54;
+
+  --background: var(--bone);
+  --foreground: var(--ink);
 }
 
 @theme inline {
+  --color-bone: var(--bone);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-concrete: var(--concrete);
+  --color-clay: var(--clay);
+  --color-clay-soft: var(--clay-soft);
+  --color-line: var(--line);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-fraunces);
+
+  /* Curva de easing cinematográfica reutilizable */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: auto; /* Lenis gestiona el smooth scroll */
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+  font-feature-settings: "ss01", "cv01";
+}
+
+/* Cuando Lenis está activo */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* --- Tipografía display --- */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* Balance de líneas en titulares */
+.text-balance {
+  text-wrap: balance;
+}
+
+/* --- Grano de película (overlay global) --- */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- Glassmorphism (navbar / píldoras estilo Airbnb) --- */
+.glass {
+  background: rgba(244, 241, 234, 0.6);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid transparent;
+  box-shadow:
+    0 12px 32px -12px rgba(0, 0, 0, 0.45),
+    0 4px 12px -6px rgba(0, 0, 0, 0.3);
+}
+.glass-dark {
+  background: rgba(23, 20, 15, 0.4);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid transparent;
+  box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
+}
+
+
+/* Línea que se dibuja bajo enlaces */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Utilidad: máscara de degradado inferior para imágenes de fondo */
+.mask-fade-b {
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+}
+
+/* Selección */
+::selection {
+  background: var(--clay);
+  color: var(--paper);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--concrete);
+  border-radius: 999px;
+}
+
+/* Respeto por reduce-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Secciones de Marcelo insertadas al final (Obra, Proceso, Hero):
+   paleta oscura propia + utilidades de esas secciones únicamente.
+   ============================================================ */
+:root {
+  --color-noir: #121110;
+  --color-hueso: #f4efe6;
+  --color-acento: #b5652b;
+}
+
+@theme inline {
+  --color-noir: var(--color-noir);
+  --color-hueso: var(--color-hueso);
+  --color-acento: var(--color-acento);
+}
+
+/* Grilla "dibujo técnico" (Hero, Proceso) */
+.blueprint-grid--dark {
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
+      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
+      transparent 1px,
+      transparent 48px
+    );
+}
+
+/* Marcas de registro de esquina (DraftingFrame, usado en Obra y Proceso) */
+.drafting-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: currentColor;
+  opacity: 0.4;
+}
+
+.drafting-corner--tl {
+  top: 1.25rem;
+  left: 1.25rem;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--tr {
+  top: 1.25rem;
+  right: 1.25rem;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+
+.drafting-corner--bl {
+  bottom: 1.25rem;
+  left: 1.25rem;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+
+.drafting-corner--br {
+  bottom: 1.25rem;
+  right: 1.25rem;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/*
+  Proceso: toggle entre flujo normal (mobile/reduced-motion) y el modo
+  pinneado de escritorio (pasos apilados, HUD de stats flotante).
+  Ver components/sections/Proceso.tsx.
+*/
+.proceso-pin.is-pinned {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.proceso-steps.is-pinned > [data-proceso-step] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.proceso-stats.is-pinned {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4rem;
+  margin-top: 0;
+  border-top: none;
+  padding-top: 0;
 }
