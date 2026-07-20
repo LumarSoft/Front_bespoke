@@ -32,8 +32,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-montserrat);
+  --font-display: var(--font-montserrat);
 
   /* Curva de easing cinematográfica reutilizable */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -71,8 +71,7 @@ html.lenis body {
 
 /* --- Tipografía display --- */
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
-  font-optical-sizing: auto;
+  font-family: var(--font-display), system-ui, sans-serif;
 }
 
 .eyebrow {
