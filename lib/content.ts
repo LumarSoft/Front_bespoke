@@ -31,23 +31,51 @@ export const manifesto = {
 export const services = [
   {
     id: "01",
-    title: "Diseño a medida",
-    desc: "Proyecto arquitectónico personalizado que resuelve lo funcional, lo constructivo y lo distributivo sin renunciar a la estética.",
+    title: "Asesoramiento",
+    desc: "Lectura funcional y estética del punto de partida: entender el terreno, el paisaje y a quien lo va a habitar.",
+    icon: "/icons/asesoramiento.png",
   },
   {
     id: "02",
-    title: "Gestión & dirección",
-    desc: "Coordinamos cada etapa de la obra para reducir tiempos, optimizar recursos y sostener el estándar de calidad.",
+    title: "Planificación",
+    desc: "Organizamos plazos, recursos y etapas antes de mover una sola piedra, para que la obra avance sin sorpresas.",
+    icon: "/icons/planificacion.png",
   },
   {
     id: "03",
-    title: "Diagnóstico",
-    desc: "Lectura funcional y estética del punto de partida: entender el terreno, el paisaje y a quien lo va a habitar.",
+    title: "Proyecto",
+    desc: "Diseño arquitectónico personalizado que resuelve lo funcional, lo constructivo y lo distributivo sin renunciar a la estética.",
+    icon: "/icons/proyecto.png",
   },
   {
     id: "04",
-    title: "Certificación",
-    desc: "Control y certificación de obra que da garantía sobre lo ejecutado, cumpliendo plazos y presupuesto.",
+    title: "Dirección de obra",
+    desc: "Supervisión técnica in situ que garantiza que lo construido responda fielmente al proyecto.",
+    icon: "/icons/direccion-de-obra.png",
+  },
+  {
+    id: "05",
+    title: "Gerenciamiento de obra",
+    desc: "Coordinamos cada etapa de la obra para reducir tiempos, optimizar recursos y sostener el estándar de calidad.",
+    icon: "/icons/gerenciamiento.png",
+  },
+];
+
+export const values = [
+  {
+    title: "Amamos lo que hacemos",
+    desc: "Cada proyecto se encara con la misma pasión del primer día, sin resignar el detalle.",
+    icon: "/icons/amamos-lo-que-hacemos.png",
+  },
+  {
+    title: "Respetamos el medio ambiente",
+    desc: "Diseñamos con conciencia del entorno y del impacto de cada decisión constructiva.",
+    icon: "/icons/medio-ambiente.png",
+  },
+  {
+    title: "Somos responsables y comprometidos",
+    desc: "Sostenemos plazos, presupuestos y la palabra dada en cada etapa de la obra.",
+    icon: "/icons/responsables-y-comprometidos.png",
   },
 ];
 

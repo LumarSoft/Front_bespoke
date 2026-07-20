@@ -3,6 +3,7 @@
 import { motion } from "motion/react";
 import { services } from "@/lib/content";
 import { Reveal, RevealText } from "@/components/ui/reveal";
+import { Icon } from "@/components/ui/icon";
 
 export default function Services() {
   return (
@@ -40,11 +41,17 @@ export default function Services() {
                 <span className="font-mono text-sm text-paper/40 transition-colors group-hover:text-clay-soft">
                   {s.id}
                 </span>
-                <motion.h3
-                  className="font-display text-3xl font-light tracking-tight transition-transform duration-500 ease-out sm:text-5xl sm:group-hover:translate-x-3"
+                <motion.div
+                  className="flex items-center gap-4 transition-transform duration-500 ease-out sm:group-hover:translate-x-3"
                 >
-                  {s.title}
-                </motion.h3>
+                  <Icon
+                    src={s.icon}
+                    className="size-7 shrink-0 text-clay-soft sm:size-9"
+                  />
+                  <h3 className="font-display text-3xl font-light tracking-tight sm:text-5xl">
+                    {s.title}
+                  </h3>
+                </motion.div>
                 <p className="col-span-2 mt-3 max-w-md text-sm leading-relaxed text-paper/55 sm:col-span-1 sm:mt-0">
                   {s.desc}
                 </p>
