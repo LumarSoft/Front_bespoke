@@ -1,35 +1,26 @@
 import Navbar from "@/components/navbar";
 import Hero from "@/components/hero";
-import Marquee from "@/components/marquee";
-import Philosophy from "@/components/philosophy";
-import Services from "@/components/services";
-import ProjectShowcase from "@/components/project-showcase";
-import Stats from "@/components/stats";
-import Studio from "@/components/studio";
-import Contact from "@/components/contact";
+import Estudio from "@/components/estudio";
+import Metodo from "@/components/metodo";
+import Proyectos from "@/components/proyectos";
+import Contacto from "@/components/contacto";
 import Footer from "@/components/footer";
 
-// Secciones de Marcelo, insertadas al final antes del footer
-import MarceObra from "@/components/sections/Obra";
-import MarceProceso from "@/components/sections/Proceso";
-import MarceHero from "@/components/sections/Hero";
-
+/**
+ * Los 4 ejes acordados con el cliente:
+ *   Estudio · Método · Proyectos · Contacto
+ * (Proyectos se abre a /proyectos/residencial y /proyectos/comercial.)
+ */
 export default function Home() {
   return (
     <>
       <Navbar />
       <main>
         <Hero />
-        <Marquee />
-        <Philosophy />
-        <Services />
-        <ProjectShowcase />
-        <Stats />
-        <Studio />
-        <Contact />
-        <MarceObra />
-        <MarceProceso />
-        <MarceHero />
+        <Estudio />
+        <Metodo />
+        <Proyectos />
+        <Contacto />
       </main>
       <Footer />
     </>

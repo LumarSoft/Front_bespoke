@@ -2,36 +2,132 @@
 
 /* ============================================================
    Bespoke Arquitectura — sistema de diseño
-   Paleta: hueso / hormigón / tinta / terracota (hora dorada)
+
+   Fuente: «Manual de identidad BESPOKE 2026».
+   Los valores de marca salen del manual, no de una elección de diseño:
+     · Blanco Cálido  #F2F2EF  (R242 G242 B239 — spec de la pág. 13)
+     · Negro          #000000  (fondo de las portadas de sección)
+     · Gris           #4D4D4D  (badges de categoría, pág. 20)
+     · Azul petróleo  #28374A  (fondo de la «Versión Cromática» del logo)
+
+   La terracota NO figura en el manual: la aprobó el cliente por separado
+   ("los detalles en el color naranja/terra"). Por eso vive como `--terra`,
+   marcada, y se usa sólo en detalles.
+
+   Dos capas:
+     1. Paleta cruda  — los colores de la marca, no cambian nunca.
+     2. Capa semántica — qué color cumple cada rol. Es la que se re-mapea
+        por portfolio (Residencial crema / Comercial sobrio) vía
+        el atributo `data-portfolio`.
    ============================================================ */
 
 :root {
-  --bone: #e9e5dc; /* fondo cálido, off-white */
-  --paper: #f4f1ea; /* superficies claras */
-  --ink: #17140f; /* casi negro cálido */
-  --ink-soft: #3c3730;
-  --concrete: #8d867a; /* gris hormigón */
-  --line: rgba(23, 20, 15, 0.12);
-  --clay: #b1542c; /* terracota — acento (hora dorada) */
-  --clay-soft: #c67a54;
+  /* --- 1. Paleta cruda (manual de identidad) --- */
+  --negro: #000000;
+  --negro-soft: #1a1a1a;
+  --blanco-calido: #f2f2ef; /* Blanco Cálido — el color base de la marca */
+  --blanco: #ffffff;
+  --gris: #4d4d4d;
+  --gris-medio: #9c9c9a;
+  --gris-claro: #d3d3d1;
+  --petroleo: #28374a; /* versión cromática del logo */
 
-  --background: var(--bone);
-  --foreground: var(--ink);
+  /* Crema: matiz más cálido que el Blanco Cálido, reservado al portfolio
+     Residencial, donde el cliente pidió que el crema predomine. */
+  --crema: #e9e5dc;
+
+  /* Acento aprobado por el cliente, fuera del manual. */
+  --terra: #b1542c;
+  --terra-soft: #c67a54;
+
+  --line: rgba(0, 0, 0, 0.12);
+  --line-invert: rgba(255, 255, 255, 0.14);
+
+  /* Alias de compatibilidad — los usan navbar, footer y secciones oscuras. */
+  --ink: var(--negro);
+  --ink-soft: #3d3d3d;
+  --paper: var(--blanco-calido);
+  --bone: var(--blanco-calido);
+  --clay: var(--terra);
+  --clay-soft: var(--terra-soft);
+
+  /* --- 2. Capa semántica (tema por defecto: Blanco Cálido del manual) --- */
+  --surface: var(--blanco-calido);
+  --surface-alt: var(--blanco);
+  --on-surface: var(--negro);
+  --on-surface-muted: var(--ink-soft);
+  --accent: var(--terra);
+  --hairline: var(--line);
+
+  --background: var(--surface);
+  --foreground: var(--on-surface);
+}
+
+/*
+  Portfolio Residencial: predomina el crema (cálido, doméstico).
+*/
+[data-portfolio="residencial"] {
+  --surface: var(--crema);
+  --surface-alt: var(--blanco-calido);
+  --on-surface: var(--negro);
+  --on-surface-muted: var(--ink-soft);
+  --accent: var(--terra);
+  --hairline: var(--line);
+}
+
+/*
+  Portfolio Comercial: gris, blanco y negro. Sin crema, más sobrio.
+  El acento terracota se conserva pero se usa con mucha menos frecuencia.
+*/
+[data-portfolio="comercial"] {
+  --surface: var(--blanco);
+  --surface-alt: var(--gris-claro);
+  --on-surface: var(--negro);
+  --on-surface-muted: var(--gris);
+  --accent: var(--terra);
+  --hairline: rgba(0, 0, 0, 0.14);
 }
 
 @theme inline {
-  --color-bone: var(--bone);
-  --color-paper: var(--paper);
+  /* Paleta cruda (manual) */
+  --color-negro: var(--negro);
+  --color-blanco-calido: var(--blanco-calido);
+  --color-blanco: var(--blanco);
+  --color-gris: var(--gris);
+  --color-gris-medio: var(--gris-medio);
+  --color-gris-claro: var(--gris-claro);
+  --color-petroleo: var(--petroleo);
+  --color-crema: var(--crema);
+  --color-terra: var(--terra);
+  --color-terra-soft: var(--terra-soft);
+
+  /* Alias en uso */
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
-  --color-concrete: var(--concrete);
+  --color-paper: var(--paper);
+  --color-bone: var(--bone);
   --color-clay: var(--clay);
   --color-clay-soft: var(--clay-soft);
   --color-line: var(--line);
 
+  /* Capa semántica — usar estas en las secciones de portfolio */
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-muted: var(--on-surface-muted);
+  --color-accent: var(--accent);
+  --color-hairline: var(--hairline);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
+  /*
+    Manual, pág. 16: Montserrat es la tipografía primaria, y una de sus
+    virtudes declaradas es "construir una identidad sólida sin necesidad de
+    combinar demasiadas tipografías". Por eso display y texto son la misma
+    familia: la jerarquía la dan el peso, el tamaño y el interletrado.
+    Aptos (secundaria, pág. 17) no se distribuye como webfont — ver layout.tsx.
+  */
   --font-sans: var(--font-montserrat);
   --font-display: var(--font-montserrat);
 
@@ -40,21 +136,29 @@
 }
 
 * {
-  border-color: var(--line);
+  border-color: var(--hairline);
 }
 
 html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   scroll-behavior: auto; /* Lenis gestiona el smooth scroll */
+  /* La barra es fija: sin esto, al saltar por anclas el título de la sección
+     queda tapado debajo del navbar. */
+  scroll-padding-top: 7rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+  /*
+    Sólo Montserrat, a propósito. Aptos (secundaria del manual) no existe como
+    webfont: declararla primero haría que quien la tenga instalada vea una
+    tipografía distinta al resto, y en este sitio la tipografía ES la marca.
+    Para usarla de verdad hay que licenciarla y auto-hostearla — ver layout.tsx.
+  */
   font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
-  font-feature-settings: "ss01", "cv01";
 }
 
 /* Cuando Lenis está activo */
@@ -69,9 +173,32 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* --- Tipografía display --- */
+/* ============================================================
+   Tipografía — todo Montserrat, según el manual.
+   El contraste lo dan peso, tamaño, itálica e interletrado.
+   ============================================================ */
+
 .font-display {
   font-family: var(--font-display), system-ui, sans-serif;
+}
+
+/* Énfasis: itálica ligera, el recurso que el cliente pidió conservar. */
+.type-emphasis {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-style: italic;
+  font-weight: 300;
+}
+
+/*
+  Versalitas del logotipo (manual, pág. 7): "ARQUITECTURA" va en Montserrat
+  Medium, mayúsculas a la altura de x y con interletrado abierto.
+  Es el recurso de marca para etiquetas y antetítulos.
+*/
+.versalitas {
+  font-family: var(--font-sans), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  font-weight: 500;
 }
 
 .eyebrow {
@@ -82,7 +209,6 @@ html.lenis body {
   font-weight: 500;
 }
 
-/* Balance de líneas en titulares */
 .text-balance {
   text-wrap: balance;
 }
@@ -98,24 +224,147 @@ html.lenis body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* --- Glassmorphism (navbar / píldoras estilo Airbnb) --- */
-.glass {
-  background: rgba(244, 241, 234, 0.6);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid transparent;
-  box-shadow:
-    0 12px 32px -12px rgba(0, 0, 0, 0.45),
-    0 4px 12px -6px rgba(0, 0, 0, 0.3);
+/* --- Íconos de marca ---
+   Los PNG de /public/icons son line-art negro sobre transparente. Sobre
+   fondo oscuro hay que invertirlos para obtener la variante en blanco que
+   el manual muestra en la pág. 20. */
+.icon-invert {
+  filter: invert(1);
 }
+
+/* ============================================================
+   Glassmorphism del navbar — píldora clara, fija y siempre visible.
+
+   Contexto: hasta ahora el `backdrop-filter` no llegaba a aplicarse (el
+   minificador descartaba la propiedad estándar), así que la barra era un
+   panel translúcido SIN desenfoque y el titular de Estudio se leía entero
+   a través de ella. Con el blur ya funcionando, el vidrio hace su trabajo.
+
+   El blur es alto a propósito: 32px en reposo y 44px al scrollear. A esa
+   escala ningún texto de fondo conserva forma legible, ni siquiera un
+   titular de 74px como el de Estudio.
+
+   IMPORTANTE: en `-webkit-backdrop-filter` la versión prefijada va PRIMERO
+   y la estándar DESPUÉS. Al revés, Lightning CSS deduplica y se queda sólo
+   con la prefijada, y el efecto muere en Firefox.
+   ============================================================ */
+
+/*
+  El navbar NO tiene animación de entrada, a propósito.
+
+  Antes arrancaba en `opacity: 0` y sólo se volvía visible cuando corría la
+  animación. Cualquier cosa que la frene —una pestaña en segundo plano, el JS
+  demorado— deja la barra invisible, porque el primer fotograma de una entrada
+  es justamente el estado oculto. Para un elemento fijo que tiene que estar
+  siempre presente, esa dependencia no compensa: aparece y listo.
+*/
+
+.nav-glass {
+  background: rgba(242, 242, 239, 0.62);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  backdrop-filter: blur(32px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 8px 28px -14px rgba(0, 0, 0, 0.4),
+    0 1px 3px -1px rgba(0, 0, 0, 0.12);
+  transition:
+    background-color 0.5s var(--ease-out-expo),
+    -webkit-backdrop-filter 0.5s var(--ease-out-expo),
+    backdrop-filter 0.5s var(--ease-out-expo),
+    border-color 0.5s var(--ease-out-expo),
+    box-shadow 0.5s var(--ease-out-expo),
+    padding 0.5s var(--ease-out-expo);
+}
+
+/* Al scrollear se densifica: más opacidad y más blur. */
+.nav-glass.is-scrolled {
+  background: rgba(242, 242, 239, 0.82);
+  -webkit-backdrop-filter: blur(44px) saturate(170%);
+  backdrop-filter: blur(44px) saturate(170%);
+  border-color: rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 34px -16px rgba(0, 0, 0, 0.5),
+    0 2px 6px -2px rgba(0, 0, 0, 0.16);
+}
+
+/* Sin soporte de backdrop-filter no hay desenfoque posible: se compensa
+   con opacidad casi plena, para que el texto de atrás nunca se cuele. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav-glass,
+  .nav-glass.is-scrolled {
+    background: rgba(242, 242, 239, 0.97);
+  }
+}
+
 .glass-dark {
-  background: rgba(23, 20, 15, 0.4);
-  backdrop-filter: blur(18px) saturate(140%);
+  background: rgba(0, 0, 0, 0.45);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid transparent;
   box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
 }
 
+/* ============================================================
+   Cortina de transición entre portfolios (Residencial ⇄ Comercial)
+
+   Las dos páginas de portfolio comparten markup y sólo cambian de paleta,
+   así que el salto entre una y otra pasaba desapercibido. La cortina cubre
+   la pantalla al montar la página, anuncia a cuál se está entrando y se
+   levanta. Va pintada con el color dominante de ese portfolio, así el
+   cambio de identidad se lee antes que el contenido.
+
+   Es CSS puro a propósito, no `motion`. El elemento arranca tapando toda
+   la pantalla: si la animación dependiera de JS y el JS no llegara a
+   correr, la cortina se quedaría tapando el sitio para siempre. Con
+   @keyframes el navegador la levanta igual. Es el mismo criterio que la
+   nota del navbar más arriba.
+
+   El reinicio en cada navegación lo fuerza el `key` del elemento en
+   components/portfolio-view.tsx: sin él React reusa el nodo y la
+   animación no vuelve a arrancar.
+
+   `prefers-reduced-motion` ya está cubierto por la regla global del final
+   del archivo: la duración cae a 0.001ms y, como el fill es `forwards`,
+   la cortina queda directamente fuera de pantalla.
+   ============================================================ */
+
+.portfolio-curtain {
+  animation: curtain-lift 0.95s var(--ease-out-expo) forwards;
+}
+
+@keyframes curtain-lift {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    /* 101% y no 100%: evita que una fila de píxeles quede a la vista por
+       redondeo en pantallas con devicePixelRatio fraccionario. */
+    transform: translateY(-101%);
+  }
+}
+
+/* `both` y no `forwards`: el label de abajo entra con delay, y sin el fill
+   hacia atrás se vería opaco durante ese delay antes de arrancar. */
+.portfolio-curtain__label {
+  animation: curtain-label 0.6s var(--ease-out-expo) both;
+}
+
+.portfolio-curtain__label--delayed {
+  animation-delay: 0.08s;
+}
+
+@keyframes curtain-label {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  60%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 /* Línea que se dibuja bajo enlaces */
 .link-underline {
@@ -158,7 +407,7 @@ html.lenis body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--concrete);
+  background: var(--gris);
   border-radius: 999px;
 }
 
@@ -172,103 +421,4 @@ html.lenis body {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* ============================================================
-   Secciones de Marcelo insertadas al final (Obra, Proceso, Hero):
-   paleta oscura propia + utilidades de esas secciones únicamente.
-   ============================================================ */
-:root {
-  --color-noir: #121110;
-  --color-hueso: #f4efe6;
-  --color-acento: #b5652b;
-}
-
-@theme inline {
-  --color-noir: var(--color-noir);
-  --color-hueso: var(--color-hueso);
-  --color-acento: var(--color-acento);
-}
-
-/* Grilla "dibujo técnico" (Hero, Proceso) */
-.blueprint-grid--dark {
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
-      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
-      transparent 1px,
-      transparent 48px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-hueso) 8%, transparent) 0px,
-      color-mix(in srgb, var(--color-hueso) 8%, transparent) 1px,
-      transparent 1px,
-      transparent 48px
-    );
-}
-
-/* Marcas de registro de esquina (DraftingFrame, usado en Obra y Proceso) */
-.drafting-corner {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-color: currentColor;
-  opacity: 0.4;
-}
-
-.drafting-corner--tl {
-  top: 1.25rem;
-  left: 1.25rem;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-
-.drafting-corner--tr {
-  top: 1.25rem;
-  right: 1.25rem;
-  border-top: 1px solid;
-  border-right: 1px solid;
-}
-
-.drafting-corner--bl {
-  bottom: 1.25rem;
-  left: 1.25rem;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-}
-
-.drafting-corner--br {
-  bottom: 1.25rem;
-  right: 1.25rem;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
-}
-
-/*
-  Proceso: toggle entre flujo normal (mobile/reduced-motion) y el modo
-  pinneado de escritorio (pasos apilados, HUD de stats flotante).
-  Ver components/sections/Proceso.tsx.
-*/
-.proceso-pin.is-pinned {
-  height: 100vh;
-  overflow: hidden;
-}
-
-.proceso-steps.is-pinned > [data-proceso-step] {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.proceso-stats.is-pinned {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 4rem;
-  margin-top: 0;
-  border-top: none;
-  padding-top: 0;
 }
