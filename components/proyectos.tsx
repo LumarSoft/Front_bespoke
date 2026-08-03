@@ -20,8 +20,8 @@ export default function Proyectos() {
       {/* Banda de video continuo: reemplaza la secuencia de imágenes estáticas. */}
       <div className="relative h-[60svh] w-full overflow-hidden">
         <BackgroundVideo
-          src={media.metodoVideo.src}
-          objectPosition={media.metodoVideo.objectPosition}
+          src={media.proyectosVideo.src}
+          objectPosition={media.proyectosVideo.objectPosition}
           className="opacity-70"
         />
         <div

@@ -5,6 +5,16 @@ import { portfolioList, type Portfolio } from "@/lib/content";
 import { Reveal } from "@/components/ui/reveal";
 
 /**
+ * Color de la cortina de transición, uno por portfolio. Son los dos extremos
+ * de la paleta a propósito: crema contra negro. Así las dos transiciones no
+ * se parecen entre sí y el salto de un portfolio al otro se nota de entrada.
+ */
+const CURTAIN: Record<Portfolio["theme"], { panel: string; eyebrow: string }> = {
+  residencial: { panel: "bg-crema text-negro", eyebrow: "text-terra" },
+  comercial: { panel: "bg-negro text-blanco-calido", eyebrow: "text-terra-soft" },
+};
+
+/**
  * Vista de un portfolio completo (Residencial o Comercial).
  *
  * La identidad de color no está hardcodeada: se activa con `data-portfolio`
@@ -14,9 +24,33 @@ import { Reveal } from "@/components/ui/reveal";
  */
 export default function PortfolioView({ portfolio }: { portfolio: Portfolio }) {
   const otro = portfolioList.find((p) => p.slug !== portfolio.slug);
+  const curtain = CURTAIN[portfolio.theme];
 
   return (
     <div data-portfolio={portfolio.theme} className="bg-surface text-on-surface">
+      {/*
+        Cortina de transición. El `key` es lo que la hace reiniciar al pasar de
+        un portfolio al otro: fuerza a React a recrear el nodo, y con el nodo
+        nuevo vuelve a correr la animación CSS. Sin `key` React reusa el mismo
+        div y la cortina sólo se vería la primera vez.
+
+        Va por encima del navbar (z-50) y del menú mobile (z-60) para que la
+        página se descubra entera de una vez; el grano global (z-100) queda
+        arriba de todo.
+      */}
+      <div
+        key={portfolio.slug}
+        aria-hidden
+        className={`portfolio-curtain pointer-events-none fixed inset-0 z-70 flex flex-col items-center justify-center ${curtain.panel}`}
+      >
+        <span className={`portfolio-curtain__label eyebrow ${curtain.eyebrow}`}>
+          Proyectos
+        </span>
+        <span className="portfolio-curtain__label portfolio-curtain__label--delayed mt-4 font-display text-5xl font-light tracking-[-0.02em] sm:text-7xl">
+          {portfolio.label}
+        </span>
+      </div>
+
       {/* Portada */}
       <header
         className="relative flex min-h-[70svh] items-end overflow-hidden bg-ink text-paper"

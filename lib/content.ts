@@ -386,7 +386,9 @@ export const media = {
     poster: "/video/tour-poster.jpg",
     objectPosition: "50% 62%",
   },
-  metodoVideo: {
+  // Banda de apertura de la sección Proyectos. (Método NO lleva video:
+  // el cliente pidió fondo negro pleno para esa sección.)
+  proyectosVideo: {
     src: "/videos/construccion.mp4",
     poster: "",
     objectPosition: "50% 50%",

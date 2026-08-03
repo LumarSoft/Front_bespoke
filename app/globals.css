@@ -304,6 +304,68 @@ html.lenis body {
   box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.55);
 }
 
+/* ============================================================
+   Cortina de transición entre portfolios (Residencial ⇄ Comercial)
+
+   Las dos páginas de portfolio comparten markup y sólo cambian de paleta,
+   así que el salto entre una y otra pasaba desapercibido. La cortina cubre
+   la pantalla al montar la página, anuncia a cuál se está entrando y se
+   levanta. Va pintada con el color dominante de ese portfolio, así el
+   cambio de identidad se lee antes que el contenido.
+
+   Es CSS puro a propósito, no `motion`. El elemento arranca tapando toda
+   la pantalla: si la animación dependiera de JS y el JS no llegara a
+   correr, la cortina se quedaría tapando el sitio para siempre. Con
+   @keyframes el navegador la levanta igual. Es el mismo criterio que la
+   nota del navbar más arriba.
+
+   El reinicio en cada navegación lo fuerza el `key` del elemento en
+   components/portfolio-view.tsx: sin él React reusa el nodo y la
+   animación no vuelve a arrancar.
+
+   `prefers-reduced-motion` ya está cubierto por la regla global del final
+   del archivo: la duración cae a 0.001ms y, como el fill es `forwards`,
+   la cortina queda directamente fuera de pantalla.
+   ============================================================ */
+
+.portfolio-curtain {
+  animation: curtain-lift 0.95s var(--ease-out-expo) forwards;
+}
+
+@keyframes curtain-lift {
+  0%,
+  32% {
+    transform: translateY(0);
+  }
+  100% {
+    /* 101% y no 100%: evita que una fila de píxeles quede a la vista por
+       redondeo en pantallas con devicePixelRatio fraccionario. */
+    transform: translateY(-101%);
+  }
+}
+
+/* `both` y no `forwards`: el label de abajo entra con delay, y sin el fill
+   hacia atrás se vería opaco durante ese delay antes de arrancar. */
+.portfolio-curtain__label {
+  animation: curtain-label 0.6s var(--ease-out-expo) both;
+}
+
+.portfolio-curtain__label--delayed {
+  animation-delay: 0.08s;
+}
+
+@keyframes curtain-label {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  60%,
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Línea que se dibuja bajo enlaces */
 .link-underline {
   position: relative;

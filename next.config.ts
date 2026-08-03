@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   images: {
     // AVIF + WebP: máxima compresión sin sacrificar calidad.
     formats: ["image/avif", "image/webp"],
-    // Permitimos calidad alta para las imágenes hero (day/night hi-res).
+    // Permitimos calidad alta para las portadas de proyecto a pantalla completa.
     qualities: [75, 90],
   },
 };
