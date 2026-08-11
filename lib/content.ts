@@ -382,15 +382,15 @@ export const contacto = {
 
 export const media = {
   heroVideo: {
-    src: "/video/tour.mp4",
-    poster: "/video/tour-poster.jpg",
+    src: "/video/hero.mp4",
+    poster: "/video/hero-poster.jpg",
     objectPosition: "50% 62%",
   },
   // Banda de apertura de la sección Proyectos. (Método NO lleva video:
   // el cliente pidió fondo negro pleno para esa sección.)
   proyectosVideo: {
-    src: "/videos/construccion.mp4",
-    poster: "",
+    src: "/video/proyectos.mp4",
+    poster: "/video/proyectos-poster.jpg",
     objectPosition: "50% 50%",
   },
 };

@@ -40,6 +40,21 @@
   --terra: #b1542c;
   --terra-soft: #c67a54;
 
+  /*
+    Variante de la terracota para TEXTO CHICO sobre fondo claro.
+    La terracota original da 4,0:1 sobre el crema del portfolio Residencial y
+    4,5:1 justo al límite sobre el Blanco Cálido; WCAG AA pide 4,5:1 para texto
+    normal. Esta versión un punto más oscura llega a 5,0:1 sobre crema y 5,6:1
+    sobre Blanco Cálido, con la misma familia de color.
+
+    Los titulares grandes y los fondos siguen usando `--terra`: en texto grande
+    el umbral baja a 3:1 y ahí la original pasa sobrada.
+
+    Si el cliente prefiere la terracota exacta en las etiquetas chicas, alcanza
+    con volver `--accent` a `var(--terra)` en los tres bloques de abajo.
+  */
+  --terra-text: #9c4824;
+
   --line: rgba(0, 0, 0, 0.12);
   --line-invert: rgba(255, 255, 255, 0.14);
 
@@ -56,7 +71,7 @@
   --surface-alt: var(--blanco);
   --on-surface: var(--negro);
   --on-surface-muted: var(--ink-soft);
-  --accent: var(--terra);
+  --accent: var(--terra-text);
   --hairline: var(--line);
 
   --background: var(--surface);
@@ -71,7 +86,7 @@
   --surface-alt: var(--blanco-calido);
   --on-surface: var(--negro);
   --on-surface-muted: var(--ink-soft);
-  --accent: var(--terra);
+  --accent: var(--terra-text);
   --hairline: var(--line);
 }
 
@@ -84,7 +99,7 @@
   --surface-alt: var(--gris-claro);
   --on-surface: var(--negro);
   --on-surface-muted: var(--gris);
-  --accent: var(--terra);
+  --accent: var(--terra-text);
   --hairline: rgba(0, 0, 0, 0.14);
 }
 
@@ -100,6 +115,7 @@
   --color-crema: var(--crema);
   --color-terra: var(--terra);
   --color-terra-soft: var(--terra-soft);
+  --color-terra-text: var(--terra-text);
 
   /* Alias en uso */
   --color-ink: var(--ink);
@@ -364,6 +380,152 @@ html.lenis body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ============================================================
+   Entrada del hero — en CSS, no en `motion`
+
+   Medido con Lighthouse en mobile (4G y CPU x4): el logo del hero es el
+   elemento LCP de la home, bajaba en 59 ms… y recién se pintaba 1,9 s después.
+   Ese hueco no era red: era la animación de entrada. Al estar hecha con
+   `motion`, el elemento arranca en `opacity: 0` y no se revela hasta que React
+   hidrata y la animación corre. O sea que la mitad del LCP era una animación
+   propia tapando el contenido ya descargado.
+
+   En CSS el navegador la ejecuta en el primer fotograma, sin esperar JS. El
+   efecto en pantalla es el mismo —barrido lateral y fundido— y además el hero
+   pasó a ser un Server Component: cero JavaScript para pintar la portada.
+
+   Es el mismo criterio que ya venían usando el navbar y la cortina de
+   portfolio, documentado más arriba: lo que tiene que estar visible sí o sí no
+   puede depender de que corra un script.
+
+   `prefers-reduced-motion` está cubierto por la regla global del final: la
+   duración cae a 0,001 ms y, como el `fill` es `both`, queda el estado final.
+   ============================================================ */
+
+@keyframes hero-wipe {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-wipe {
+  animation: hero-wipe 1.1s var(--ease-out-expo) 0.12s both;
+}
+
+.hero-rise {
+  animation: hero-rise 0.9s var(--ease-out-expo) both;
+}
+
+.hero-fade {
+  animation: hero-fade 0.9s var(--ease-out-expo) both;
+}
+
+/* Escalonado: el ritmo de entrada que tenía la versión con `motion`. */
+.hero-d1 {
+  animation-delay: 0.25s;
+}
+.hero-d2 {
+  animation-delay: 0.7s;
+}
+.hero-d3 {
+  animation-delay: 0.95s;
+}
+
+/* ── Menú mobile (components/navbar.tsx) ── */
+
+.menu-overlay {
+  animation: hero-fade 0.35s var(--ease-out-expo) both;
+}
+
+.menu-item {
+  animation: menu-item 0.55s var(--ease-out-expo) both;
+}
+
+@keyframes menu-item {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Deriva del fondo de Contacto, atada al scroll ──
+   Reemplaza al `useScroll` + `useTransform` de motion por una scroll-driven
+   animation nativa: la recorre el compositor, sin pasar por el hilo principal.
+   Donde todavía no está soportada (`@supports`), la imagen queda quieta y
+   escalada, que es exactamente como se veía sin scroll. */
+
+.parallax-drift {
+  transform: scale(1.1);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .parallax-drift {
+      animation: parallax-drift linear both;
+      animation-timeline: view();
+    }
+  }
+}
+
+@keyframes parallax-drift {
+  from {
+    transform: translateY(-12%) scale(1.1);
+  }
+  to {
+    transform: translateY(12%) scale(1.1);
+  }
+}
+
+/* ── Revelado al entrar en viewport (components/ui/reveal.tsx) ──
+   La clase la enciende un IntersectionObserver. La transición vive acá para que
+   no cueste JavaScript de animación: es la misma curva y duración que tenía la
+   versión con `motion`. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-y, 28px));
+  transition:
+    opacity 0.9s var(--ease-out-expo) var(--reveal-delay, 0s),
+    transform 0.9s var(--ease-out-expo) var(--reveal-delay, 0s);
+  /* Le avisa al navegador qué va a cambiar, sin dejar capas colgadas. */
+  will-change: opacity, transform;
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
 }
 
 /* Línea que se dibuja bajo enlaces */

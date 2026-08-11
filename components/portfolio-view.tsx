@@ -55,11 +55,13 @@ export default function PortfolioView({ portfolio }: { portfolio: Portfolio }) {
       <header
         className="relative flex min-h-[70svh] items-end overflow-hidden bg-ink text-paper"
       >
+        {/* Elemento LCP de esta página: mismo criterio que el hero. */}
         <Image
           src={portfolio.cover.src}
           alt={portfolio.cover.alt}
           fill
-          priority
+          preload
+          fetchPriority="high"
           sizes="100vw"
           className="object-cover opacity-65"
         />

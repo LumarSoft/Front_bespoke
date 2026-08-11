@@ -4,6 +4,8 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import PortfolioView from "@/components/portfolio-view";
 import { portfolios, type Portfolio } from "@/lib/content";
+import { GEO } from "@/lib/site";
+import { portfolioJsonLd } from "@/lib/structured-data";
 
 /**
  * Una sola página sirve a los dos portfolios. Lo único que cambia entre
@@ -31,12 +33,38 @@ export async function generateMetadata({
   if (!isPortfolioSlug(categoria)) return {};
 
   const portfolio = portfolios[categoria];
+
+  /**
+   * El título lleva el tipo de arquitectura y la ciudad, porque es así como se
+   * busca: "arquitectura residencial Rosario", no "portfolio residencial".
+   * Cada portfolio compite por su propio término y no contra la home.
+   */
+  const title = `Arquitectura ${portfolio.label.toLowerCase()} en ${GEO.city}`;
+  const description = `${portfolio.intro} Obras del estudio Bespoke Arquitectura en ${GEO.city} y la región.`;
+
   return {
-    title: `Proyectos ${portfolio.label}`,
-    description: portfolio.intro,
+    title,
+    description,
+    alternates: { canonical: `/proyectos/${portfolio.slug}` },
     openGraph: {
-      title: `Proyectos ${portfolio.label} · Bespoke Arquitectura`,
-      description: portfolio.intro,
+      title: `${title} · Bespoke Arquitectura`,
+      description,
+      type: "website",
+      locale: "es_AR",
+      url: `/proyectos/${portfolio.slug}`,
+      images: [
+        {
+          url: portfolio.cover.src,
+          width: 1280,
+          height: 720,
+          alt: portfolio.cover.alt,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · Bespoke Arquitectura`,
+      description,
       images: [portfolio.cover.src],
     },
   };
@@ -52,6 +80,17 @@ export default async function PortfolioPage({
 
   return (
     <>
+      {/*
+        Grafo de la colección: la página, su miga de pan y las obras como
+        `CreativeWork`. Es lo que le da a Google una lista enumerable de obras
+        con año, lugar y foto, en lugar de una galería de imágenes sueltas.
+      */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(portfolioJsonLd(categoria)),
+        }}
+      />
       <Navbar />
       <main>
         <PortfolioView portfolio={portfolios[categoria]} />

@@ -45,7 +45,7 @@ export default function Footer() {
               <Link
                 key={portfolio.slug}
                 href={`/proyectos/${portfolio.slug}`}
-                className="link-underline w-fit text-paper/45 transition-colors hover:text-paper"
+                className="link-underline w-fit text-paper/60 transition-colors hover:text-paper"
               >
                 — {portfolio.label}
               </Link>
@@ -72,7 +72,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 text-xs text-paper/40 sm:flex-row sm:justify-between">
+        <div className="mt-10 flex flex-col gap-2 text-xs text-paper/60 sm:flex-row sm:justify-between">
           <p>
             © {year} {studio.full}. Todos los derechos reservados.
           </p>

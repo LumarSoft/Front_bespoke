@@ -49,7 +49,15 @@ export default function Metodo() {
               tabIndex={0}
               className="group grid grid-cols-[auto_1fr] items-center gap-x-5 border-b border-white/10 py-8 outline-none sm:grid-cols-[3rem_4rem_1fr_1.2fr] sm:gap-x-8 sm:py-10"
             >
-              <span className="font-sans text-sm tabular-nums text-paper/40 transition-colors duration-200 group-hover:text-clay group-focus:text-clay">
+              {/*
+                Reposo al 60% y no al 40%: al 40% el número daba 3,4:1 sobre
+                negro y WCAG AA pide 4,5:1. Y el color de interacción es
+                `clay-soft` (6,3:1) en lugar de `clay` (4,2:1) — la misma
+                terracota que ya usan el resto de las secciones oscuras.
+                El cambio de color al interactuar, que es lo que pidió el
+                cliente, se mantiene intacto.
+              */}
+              <span className="font-sans text-sm tabular-nums text-paper/60 transition-colors duration-200 group-hover:text-clay-soft group-focus:text-clay-soft">
                 {paso.id}
               </span>
 

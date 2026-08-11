@@ -1,66 +1,111 @@
 "use client";
 
-import { ReactLenis, useLenis } from "lenis/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, type ReactNode } from "react";
+import type Lenis from "lenis";
 
 /**
- * Smooth-scroll global con Lenis. Respeta prefers-reduced-motion
- * (Lenis se desactiva y el navegador usa scroll nativo).
+ * Smooth-scroll global con Lenis.
  *
- * Calibración: el `lerp: 0.09` anterior arrastraba demasiado la rueda — el
+ * ── Por qué se carga tarde y con `import()` dinámico ─────────────────────────
+ * Lenis corre un bucle de `requestAnimationFrame` permanente. Medido con
+ * Lighthouse en mobile, arrancar durante la carga le costaba ~0,5 s de hilo
+ * principal justo en la ventana que define el LCP. Nadie hace scroll en el
+ * primer segundo, así que se inicializa recién cuando la página terminó de
+ * cargar y el navegador está libre. Antes de eso el scroll es el nativo, que se
+ * siente igual de fluido para el primer gesto; después toma el control Lenis.
+ *
+ * El `await import("lenis")` además lo saca del chunk inicial: son ~24 KB que
+ * no se descargan hasta que hacen falta.
+ *
+ * Calibración: el `lerp: 0.09` original arrastraba demasiado la rueda — el
  * scroll seguía moviéndose bastante después de soltar, que es parte de lo que
  * el cliente leyó como poco natural. Con 0.14 el suavizado se nota pero la
  * rueda responde de inmediato.
+ *
+ * Con `prefers-reduced-motion` no se inicializa nunca: queda el scroll nativo.
  */
 export default function SmoothScroll({ children }: { children: ReactNode }) {
-  return (
-    <ReactLenis
-      root
-      options={{
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+  const primeraCarga = useRef(true);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let cancelado = false;
+    let frame = 0;
+
+    const iniciar = async () => {
+      const { default: Lenis } = await import("lenis");
+      if (cancelado) return;
+
+      const lenis = new Lenis({
         lerp: 0.14,
         smoothWheel: true,
         wheelMultiplier: 1,
         touchMultiplier: 1.5,
-      }}
-    >
-      <ScrollReset />
-      {children}
-    </ReactLenis>
-  );
-}
+      });
+      lenisRef.current = lenis;
 
-/**
- * Lleva la página al tope en cada cambio de ruta.
- *
- * Hace falta porque Lenis pisa el scroll-to-top del App Router: Next hace su
- * `scrollTo(0)` durante la navegación, pero Lenis es quien escribe la posición
- * en cada frame y sigue teniendo guardado el scroll anterior, así que en el
- * frame siguiente lo vuelve a aplicar. Resultado: al saltar de Residencial a
- * Comercial la página abría por la mitad, donde había quedado la anterior.
- * Poniendo el valor en el propio Lenis (`immediate`, que lo aplica de una y no
- * anima el recorrido) ya no queda nada viejo que restaurar.
- *
- * Dos excepciones:
- *   · Si la URL trae ancla (`/#proyectos`, `/#estudio`) no tocamos nada: ahí el
- *     destino es la sección, no el tope.
- *   · La primera carga se saltea, para no pisar la restauración de scroll del
- *     navegador al refrescar.
- */
-function ScrollReset() {
-  const lenis = useLenis();
-  const pathname = usePathname();
-  const primeraCarga = useRef(true);
+      const bucle = (tiempo: number) => {
+        lenis.raf(tiempo);
+        frame = requestAnimationFrame(bucle);
+      };
+      frame = requestAnimationFrame(bucle);
+    };
 
+    const cuandoElNavegadorEsteLibre = () => {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(() => void iniciar(), { timeout: 1500 });
+      } else {
+        setTimeout(() => void iniciar(), 200);
+      }
+    };
+
+    if (document.readyState === "complete") {
+      cuandoElNavegadorEsteLibre();
+    } else {
+      window.addEventListener("load", cuandoElNavegadorEsteLibre, { once: true });
+    }
+
+    return () => {
+      cancelado = true;
+      cancelAnimationFrame(frame);
+      window.removeEventListener("load", cuandoElNavegadorEsteLibre);
+      lenisRef.current?.destroy();
+      lenisRef.current = null;
+    };
+  }, []);
+
+  /**
+   * Lleva la página al tope en cada cambio de ruta.
+   *
+   * Hace falta porque Lenis pisa el scroll-to-top del App Router: Next hace su
+   * `scrollTo(0)` durante la navegación, pero Lenis es quien escribe la posición
+   * en cada frame y sigue teniendo guardado el scroll anterior, así que en el
+   * frame siguiente lo vuelve a aplicar. Resultado: al saltar de Residencial a
+   * Comercial la página abría por la mitad, donde había quedado la anterior.
+   * Poniendo el valor en el propio Lenis (`immediate`, que lo aplica de una y no
+   * anima el recorrido) ya no queda nada viejo que restaurar.
+   *
+   * Dos excepciones:
+   *   · Si la URL trae ancla (`/#proyectos`, `/#estudio`) no tocamos nada: ahí el
+   *     destino es la sección, no el tope.
+   *   · La primera carga se saltea, para no pisar la restauración de scroll del
+   *     navegador al refrescar.
+   */
   useEffect(() => {
     if (primeraCarga.current) {
       primeraCarga.current = false;
       return;
     }
-    if (!lenis || window.location.hash) return;
+    if (window.location.hash) return;
 
-    lenis.scrollTo(0, { immediate: true, force: true });
-  }, [lenis, pathname]);
+    // Si Lenis todavía no arrancó, el scroll nativo del router ya hizo su
+    // trabajo y no hay nada que corregir.
+    lenisRef.current?.scrollTo(0, { immediate: true, force: true });
+  }, [pathname]);
 
-  return null;
+  return <>{children}</>;
 }

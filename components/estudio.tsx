@@ -67,8 +67,8 @@ export default function Estudio() {
         {/* --- Valores (íconos del manual, pág. 20) --- */}
         <ul className="mt-24 grid gap-12 border-t border-hairline pt-12 sm:grid-cols-3 sm:gap-10">
           {estudio.valores.map((valor, i) => (
-            <Reveal key={valor.title} delay={i * 0.08}>
-              <li>
+            <Reveal as="li" key={valor.title} delay={i * 0.08}>
+              <>
                 <Image
                   src={valor.icon}
                   alt=""
@@ -84,7 +84,7 @@ export default function Estudio() {
                 <p className="mt-3 text-sm leading-relaxed text-on-surface-muted">
                   {valor.desc}
                 </p>
-              </li>
+              </>
             </Reveal>
           ))}
         </ul>
@@ -105,15 +105,18 @@ export default function Estudio() {
 
             <ul className="mt-12 border-t border-hairline">
               {estudio.equipo.miembros.map((member, i) => (
-                <Reveal key={member.name} delay={i * 0.05}>
-                  <li className="flex items-center justify-between gap-6 border-b border-hairline py-5">
-                    <span className="font-display text-xl font-light sm:text-2xl">
-                      {member.name}
-                    </span>
-                    <span className="text-right text-xs uppercase tracking-[0.14em] text-on-surface-muted sm:text-sm">
-                      {member.role}
-                    </span>
-                  </li>
+                <Reveal
+                  as="li"
+                  key={member.name}
+                  delay={i * 0.05}
+                  className="flex items-center justify-between gap-6 border-b border-hairline py-5"
+                >
+                  <span className="font-display text-xl font-light sm:text-2xl">
+                    {member.name}
+                  </span>
+                  <span className="text-right text-xs uppercase tracking-[0.14em] text-on-surface-muted sm:text-sm">
+                    {member.role}
+                  </span>
                 </Reveal>
               ))}
             </ul>

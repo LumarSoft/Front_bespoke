@@ -1,8 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
 import { ArrowUpRight, Mail, MapPin, MessageCircle } from "lucide-react";
 import { contacto, studio } from "@/lib/content";
 import { Reveal } from "@/components/ui/reveal";
@@ -19,22 +15,22 @@ const TITLE = [
   ],
 ] as const;
 
-/** Eje 4 — CONTACTO. Email y WhatsApp como los dos canales principales. */
+/**
+ * Eje 4 — CONTACTO. Email y WhatsApp como los dos canales principales.
+ *
+ * Sin `"use client"`: el desplazamiento del fondo, que antes era un
+ * `useScroll` + `useTransform` de motion, ahora es una animación CSS atada al
+ * scroll (`.parallax-drift`, en globals.css). Misma deriva de ±12%, cero
+ * JavaScript, y en los navegadores que todavía no soportan scroll-driven
+ * animations la imagen simplemente queda quieta.
+ */
 export default function Contacto() {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
-
   return (
     <section
       id="contacto"
-      ref={ref}
       className="relative overflow-hidden bg-ink px-5 py-32 text-paper sm:px-8 sm:py-44"
     >
-      <motion.div style={{ y: bgY }} className="absolute inset-0 scale-110">
+      <div className="parallax-drift absolute inset-0">
         <Image
           src="/projects/dusk-glow.jpg"
           alt=""
@@ -43,7 +39,7 @@ export default function Contacto() {
           className="object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/60 to-ink" />
-      </motion.div>
+      </div>
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <Reveal>
@@ -101,7 +97,7 @@ export default function Contacto() {
           </Reveal>
         </div>
 
-        <p className="mt-16 text-sm text-paper/40">
+        <p className="mt-16 text-sm text-paper/55">
           {studio.full} · {studio.location}
         </p>
       </div>

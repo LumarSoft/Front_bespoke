@@ -21,6 +21,7 @@ export default function Proyectos() {
       <div className="relative h-[60svh] w-full overflow-hidden">
         <BackgroundVideo
           src={media.proyectosVideo.src}
+          poster={media.proyectosVideo.poster}
           objectPosition={media.proyectosVideo.objectPosition}
           className="opacity-70"
         />

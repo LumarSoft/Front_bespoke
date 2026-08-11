@@ -1,91 +1,82 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-/** Aparición suave (fade + slide) al entrar en viewport. */
+/**
+ * Aparición suave (fundido + desplazamiento) al entrar en viewport.
+ *
+ * Implementado con IntersectionObserver y una transición CSS, no con una
+ * librería de animación. El motivo es medible: `motion` era la dependencia más
+ * pesada del sitio y su ejecución en el hilo principal era lo que empujaba el
+ * LCP en mobile. La transición es idéntica en pantalla —misma curva, misma
+ * duración, mismo escalonado— y no cuesta JavaScript de animación.
+ *
+ * `as` existe porque dentro de una lista el wrapper no puede ser un `div`: un
+ * `<ul>` sólo admite `<li>` como hijo directo. Envolver cada `<li>` en un div
+ * rompía la lista para los lectores de pantalla (axe: `list` / `listitem`), así
+ * que en esos casos se usa `<Reveal as="li">` y el propio Reveal es el ítem.
+ */
 export function Reveal({
   children,
   className,
   delay = 0,
   y = 28,
   once = true,
+  as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
   y?: number;
   once?: boolean;
+  as?: "div" | "li";
 }) {
+  const ref = useRef<HTMLDivElement & HTMLLIElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Sin IntersectionObserver no hay revelado posible: se muestra y listo.
+    // Nunca dejar contenido escondido esperando una API que no existe.
+    // (Se difiere un frame para no llamar a setState en el cuerpo del efecto.)
+    if (typeof IntersectionObserver === "undefined") {
+      const frame = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(frame);
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            if (once) io.disconnect();
+          } else if (!once) {
+            setVisible(false);
+          }
+        }
+      },
+      { rootMargin: "-12% 0px -12% 0px" },
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [once]);
+
   return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, margin: "-12% 0px -12% 0px" }}
-      transition={{ duration: 0.9, ease: EASE, delay }}
+    <Tag
+      ref={ref}
+      className={cn("reveal", visible && "is-revealed", className)}
+      style={
+        {
+          "--reveal-y": `${y}px`,
+          "--reveal-delay": `${delay}s`,
+        } as React.CSSProperties
+      }
     >
       {children}
-    </motion.div>
+    </Tag>
   );
-}
-
-/**
- * Revelado de titular palabra por palabra, con máscara vertical.
- * `as` permite elegir el tag (h1, h2, p...).
- */
-export function RevealText({
-  text,
-  className,
-  wordClassName,
-  delay = 0,
-  stagger = 0.06,
-  as = "h2",
-}: {
-  text: string;
-  className?: string;
-  wordClassName?: string;
-  delay?: number;
-  stagger?: number;
-  as?: "h1" | "h2" | "h3" | "p" | "span";
-}) {
-  const ref = useRef<HTMLHeadingElement & HTMLParagraphElement & HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
-  const words = text.split(" ");
-
-  const inner = words.map((word, i) => (
-    <span key={i} className="mr-[0.28em] inline-block overflow-hidden py-[0.06em]">
-      <motion.span
-        aria-hidden
-        className={cn("inline-block", wordClassName)}
-        initial={{ y: "110%" }}
-        animate={inView ? { y: 0 } : { y: "110%" }}
-        transition={{
-          duration: 0.85,
-          ease: EASE,
-          delay: delay + i * stagger,
-        }}
-      >
-        {word}
-      </motion.span>
-    </span>
-  ));
-
-  const classes = cn("flex flex-wrap", className);
-
-  switch (as) {
-    case "h1":
-      return <h1 ref={ref} className={classes} aria-label={text}>{inner}</h1>;
-    case "h3":
-      return <h3 ref={ref} className={classes} aria-label={text}>{inner}</h3>;
-    case "p":
-      return <p ref={ref} className={classes} aria-label={text}>{inner}</p>;
-    case "span":
-      return <span ref={ref} className={classes} aria-label={text}>{inner}</span>;
-    default:
-      return <h2 ref={ref} className={classes} aria-label={text}>{inner}</h2>;
-  }
 }
