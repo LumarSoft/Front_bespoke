@@ -13,6 +13,9 @@ import MixedHeading from "@/components/ui/mixed-heading";
  * `MixedHeading` (dos familias, pesos e itálicas) nace acá y se replica en Método.
  */
 export default function Estudio() {
+  const [origenAntesDeBespoke, origenDespuesDeBespoke] =
+    estudio.filosofia.body.split("bespoke");
+
   return (
     <section
       id="estudio"
@@ -55,19 +58,28 @@ export default function Estudio() {
           </Reveal>
           <Reveal delay={0.1}>
             <p className="text-base leading-relaxed text-on-surface-muted sm:text-lg">
-              El nombre viene del oficio de la sastrería:{" "}
-              <em className="type-emphasis not-italic text-on-surface">bespoke</em> es la
-              prenda hecha a medida, cortada para un cuerpo y no para un talle. Esa idea
-              ordena todo lo que hacemos — cada rincón, cada material y cada junta
-              responden a una necesidad concreta, nunca a un gesto decorativo.
+              {origenAntesDeBespoke}
+              <em className="type-emphasis not-italic text-on-surface">bespoke</em>
+              {origenDespuesDeBespoke}
             </p>
           </Reveal>
         </div>
 
-        {/* --- Valores (íconos del manual, pág. 20) --- */}
-        <ul className="mt-24 grid gap-12 border-t border-hairline pt-12 sm:grid-cols-3 sm:gap-10">
+        {/* --- Pilares (íconos del manual, pág. 20) --- */}
+        <ul className="mt-24 grid gap-12 border-t border-hairline pt-12 sm:grid-cols-2 sm:gap-10 lg:grid-cols-6">
           {estudio.valores.map((valor, i) => (
-            <Reveal as="li" key={valor.title} delay={i * 0.08}>
+            <Reveal
+              as="li"
+              key={valor.title}
+              delay={i * 0.08}
+              className={[
+                "lg:col-span-2",
+                i === 3 ? "lg:col-start-2" : "",
+                i === 4
+                  ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-1.25rem)] lg:mx-0 lg:w-auto"
+                  : "",
+              ].join(" ")}
+            >
               <>
                 <Image
                   src={valor.icon}

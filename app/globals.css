@@ -158,7 +158,9 @@
 html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  scroll-behavior: auto; /* Lenis gestiona el smooth scroll */
+  /* Fallback sutil mientras Lenis termina su carga diferida. Cuando Lenis
+     está activo, `.lenis-smooth` lo reemplaza para evitar dos animaciones. */
+  scroll-behavior: smooth;
   /* La barra es fija: sin esto, al saltar por anclas el título de la sección
      queda tapado debajo del navbar. */
   scroll-padding-top: 7rem;

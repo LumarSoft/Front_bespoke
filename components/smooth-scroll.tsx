@@ -30,6 +30,69 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const primeraCarga = useRef(true);
 
+  /**
+   * Suaviza los enlaces a secciones de la página sin cambiar el comportamiento
+   * de enlaces externos, nuevas pestañas ni navegaciones entre rutas.
+   *
+   * El listener vive en captura para adelantarse al scroll de Next y del
+   * navegador. Si Lenis todavía no terminó su carga diferida, `scrollIntoView`
+   * funciona como fallback; la regla CSS de `html` le aporta la misma sutileza.
+   */
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const alPulsarAncla = (event: MouseEvent) => {
+      if (
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const enlace =
+        event.target instanceof Element
+          ? event.target.closest<HTMLAnchorElement>("a[href]")
+          : null;
+      if (!enlace) return;
+
+      const destinoUrl = new URL(enlace.href, window.location.href);
+      if (
+        destinoUrl.origin !== window.location.origin ||
+        destinoUrl.pathname !== window.location.pathname ||
+        !destinoUrl.hash
+      ) {
+        return;
+      }
+
+      const id = decodeURIComponent(destinoUrl.hash.slice(1));
+      const destino = document.getElementById(id);
+      if (!destino) return;
+
+      event.preventDefault();
+      // Evita que Next procese el mismo click después y aplique su salto
+      // inmediato. El evento propio permite que el menú mobile se cierre.
+      event.stopImmediatePropagation();
+      window.dispatchEvent(new Event("bespoke:section-navigation"));
+      if (window.location.hash !== destinoUrl.hash) {
+        window.history.pushState(null, "", destinoUrl.hash);
+      }
+
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(destino, { lerp: 0.1 });
+      } else {
+        destino.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    // `window` captura antes que el listener delegado de Next en `document`.
+    // Así Next ve `defaultPrevented` y no ejecuta un segundo salto inmediato.
+    window.addEventListener("click", alPulsarAncla, true);
+    return () => window.removeEventListener("click", alPulsarAncla, true);
+  }, []);
+
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 

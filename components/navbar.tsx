@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Menu, X } from "lucide-react";
 import { logo, nav, studio, contacto } from "@/lib/content";
@@ -21,6 +22,7 @@ const UMBRAL_SCROLL = 40;
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const activa = useSeccionActiva();
 
   /**
@@ -54,6 +56,15 @@ export default function Navbar() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+
+  // SmoothScroll intercepta las anclas antes que Next para animarlas; este
+  // evento mantiene el cierre del menú mobile dentro del mismo gesto.
+  useEffect(() => {
+    const cerrarAlNavegar = () => setOpen(false);
+    window.addEventListener("bespoke:section-navigation", cerrarAlNavegar);
+    return () =>
+      window.removeEventListener("bespoke:section-navigation", cerrarAlNavegar);
+  }, []);
 
   return (
     <>
@@ -92,7 +103,7 @@ export default function Navbar() {
               sizes="150px"
               className={cn(
                 "h-auto transition-[width] duration-500",
-                scrolled ? "w-[104px] sm:w-[118px]" : "w-[112px] sm:w-[132px]",
+                scrolled ? "w-[92px] sm:w-[118px]" : "w-24 sm:w-[132px]",
               )}
             />
           </Link>
@@ -104,6 +115,7 @@ export default function Navbar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    scroll={pathname !== "/"}
                     aria-current={esActiva ? "page" : undefined}
                     className={cn(
                       "link-underline rounded-sm text-sm outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-clay",
@@ -124,10 +136,10 @@ export default function Navbar() {
               href={contacto.whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="group hidden items-center gap-1.5 rounded-full bg-ink px-5 py-2.5 text-sm font-medium text-paper outline-none transition-colors duration-300 hover:bg-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 md:inline-flex"
+              className="group inline-flex items-center gap-1.5 rounded-full bg-ink px-3 py-2 text-xs font-medium text-paper outline-none transition-colors duration-300 hover:bg-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 sm:px-4 sm:text-sm md:px-5 md:py-2.5"
             >
               Consultar
-              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 sm:size-4" />
             </a>
             <button
               onClick={() => setOpen(true)}
@@ -183,6 +195,7 @@ export default function Navbar() {
               >
                 <Link
                   href={item.href}
+                  scroll={pathname !== "/"}
                   onClick={() => setOpen(false)}
                   className="block border-b border-white/10 py-4 font-display text-4xl font-light tracking-tight"
                 >

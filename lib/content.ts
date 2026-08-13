@@ -58,12 +58,12 @@ export const estudio = {
   queEs: {
     lines: [
       [
-        { text: "No diseñamos", tone: "regular" },
-        { text: "objetos.", tone: "italic" },
+        { text: "No proyectamos", tone: "regular" },
+        { text: "espacios.", tone: "italic" },
       ],
       [
         { text: "Diseñamos la", tone: "regular" },
-        { text: "manera", tone: "black" },
+        { text: "experiencia", tone: "black" },
       ],
       [
         { text: "de", tone: "versal" },
@@ -71,16 +71,15 @@ export const estudio = {
         { text: "un lugar.", tone: "regular" },
       ],
     ],
-    // TODO(contenido): reemplazar por el texto definitivo del cliente.
-    body: "Bespoke es un estudio de arquitectura que trabaja a medida: cada obra se corta según quien la va a vivir o usar. No partimos de un catálogo de soluciones, partimos del sitio, del programa y de la persona.",
+    body: "Bespoke es un estudio de arquitectura enfocado en el diseño verdaderamente a medida. No creemos en fórmulas prefabricadas ni en catálogos estandarizados: Concebimos cada proyecto desde el diálogo profundo con el espacio, la materialidad y la forma de vida de quien lo habitará.",
   },
 
   // "Filosofía y Origen"
   filosofia: {
     title: "Filosofía y origen",
-    quote: "Los detalles no son decoración: son decisiones de proyecto.",
-    // TODO(contenido): reemplazar por el texto definitivo del cliente.
-    body: "El nombre viene del oficio de la sastrería: *bespoke* es la prenda hecha a medida, cortada para un cuerpo y no para un talle. Esa idea ordena todo lo que hacemos — cada rincón, cada material y cada junta responden a una necesidad concreta, nunca a un gesto decorativo.",
+    quote:
+      "La arquitectura de excelencia nace de la precisión en el proceso y el respeto por el lugar.",
+    body: "En su origen en la sastrería, Bespoke nace de bespoke: el acto de ‘hablar’, encargar y reservar en exclusiva antes de dar la primera puntada. Llevado a la arquitectura, este principio significa que cada espacio se concibe a través del diálogo directo con quien lo habitará. La iluminación, los materiales y cada rincón no se imponen, sino que responden al proceso realizado de escucha: la estética es la consecuencia natural de resolver con precisión lo que la vida en ese lugar exige.",
   },
 
   // "Equipo interdisciplinario"
@@ -103,25 +102,32 @@ export const estudio = {
     },
   },
 
-  /**
-   * Los tres íconos de valores del manual (pág. 20). Van en Estudio porque
-   * hablan de quiénes son, no de qué hacen — eso último es Método.
-   */
+  /** Los pilares reutilizan el sistema de íconos lineales del manual (pág. 20). */
   valores: [
     {
       icon: icono("Amamos lo que hacemos"),
-      title: "Amamos lo que hacemos",
-      desc: "Cada proyecto se piensa desde cero. No hay soluciones predeterminadas ni encargos de trámite.",
+      title: "Sin Plantillas",
+      desc: "Proyectamos a partir de las necesidades de cada cliente. Evitamos lo estandarizado para crear espacios funcionales y con carácter, donde la arquitectura se adapta a tu forma de vivir.",
     },
     {
       icon: icono("Medio Ambiente"),
-      title: "Medio ambiente",
-      desc: "El sitio, la orientación y los materiales son decisiones de proyecto antes que de estilo.",
+      title: "Arquitectura Consciente",
+      desc: "El entorno, la orientación solar y el uso eficiente de la materia prima no son temas secundarios, sino los ejes fundamentales que determinan cada una de nuestras decisiones.",
+    },
+    {
+      icon: icono("Planificación"),
+      title: "Gestión Clara y Asincrónica",
+      desc: "Diseñamos con la misma precisión con la que gestionamos. Trabajamos con procesos documentados y comunicación fluida para que el cliente tenga previsibilidad total del proyecto sin fricciones.",
+    },
+    {
+      icon: icono("Proyecto"),
+      title: "Ejecución y Detalle",
+      desc: "Ningún gesto es puramente decorativo. Cada rincón y cada encuentro de materiales responde a una solución constructiva precisa, cuidando la viabilidad económica y el estándar de calidad.",
     },
     {
       icon: icono("Somos responsables y comprometidos"),
-      title: "Responsables y comprometidos",
-      desc: "Acompañamos la obra de punta a punta, sosteniendo plazos, presupuesto y estándar de calidad.",
+      title: "Responsabilidad Integral",
+      desc: "Acompañamos el proceso completo, desde la primera idea tipológica hasta la entrega de la obra, garantizando el cumplimiento de plazos, presupuestos y fidelidad al diseño original.",
     },
   ],
 };
@@ -133,59 +139,53 @@ export const estudio = {
    ============================================================ */
 
 export const metodo = {
-  eyebrow: "Cómo trabajamos",
+  eyebrow: "El Método BESPOKE",
   // Titular con el mismo criterio de jerarquía mixta que Estudio.
   title: {
     lines: [
       [
-        { text: "Un", tone: "versal" },
-        { text: "método", tone: "black" },
+        { text: "Desde nuestro", tone: "regular" },
       ],
       [
-        { text: "de punta", tone: "regular" },
-        { text: "a punta.", tone: "italic" },
+        { text: "primer contacto", tone: "black" },
+      ],
+      [
+        { text: "hasta la", tone: "versal" },
+        { text: "entrega final", tone: "italic" },
       ],
     ],
   },
   intro:
-    "Del primer asesoramiento a la entrega, acompañamos cada etapa del ciclo de vida de la obra.",
+    "Diseñamos y construimos con una visión 360°: articulamos cada etapa con procesos claros, documentación rigurosa y presencia activa antes, durante y después de la entrega.",
 
   /**
-   * Los cinco servicios salen de los íconos del manual (pág. 20), que nombran
-   * la taxonomía real del estudio: Asesoramiento · Planificación · Proyecto ·
-   * Gerenciamiento de obra · Dirección de obra.
-   * TODO(contenido): el cliente debe validar las descripciones.
+   * Las cuatro etapas conservan los íconos del manual que mejor representan
+   * cada concepto dentro del nuevo Método Bespoke.
    */
   pasos: [
     {
       id: "01",
       icon: icono("Asesoramiento"),
-      title: "Asesoramiento",
-      desc: "Lectura funcional y estética del punto de partida: entender el terreno, el programa y a quien lo va a habitar.",
+      title: "Arquitectura a Medida",
+      desc: "Diseñamos a partir de un proceso de escucha activa. No aplicamos soluciones predeterminadas: creamos respuestas espaciales únicas alineadas a la forma de vida de cada cliente.",
     },
     {
       id: "02",
       icon: icono("Planificación"),
-      title: "Planificación",
-      desc: "Definimos alcance, etapas y presupuesto antes de dibujar, para que el proyecto sea viable desde el primer día.",
+      title: "Soluciones Creativas",
+      desc: "Abordamos cada desafío proyectual sin moldes, transformando las condicionantes de sitio, presupuesto o materialidad en oportunidades para generar arquitectura que emocione y trascienda.",
     },
     {
       id: "03",
-      icon: icono("Proyecto"),
-      title: "Proyecto",
-      desc: "Diseño arquitectónico a medida que resuelve lo funcional, lo constructivo y lo distributivo sin renunciar a la estética.",
+      icon: icono("Gerenciamiento"),
+      title: "Responsabilidad",
+      desc: "Acompañamos el proyecto de punta a punta. Asumimos el compromiso riguroso de cumplir con la palabra empeñada, los plazos acordados y los estándares técnicos de calidad.",
     },
     {
       id: "04",
-      icon: icono("Gerenciamiento"),
-      title: "Gerenciamiento de obra",
-      desc: "Coordinamos equipos, tiempos y recursos durante todo el desarrollo, optimizando cada etapa.",
-    },
-    {
-      id: "05",
       icon: icono("Dirección de obra"),
-      title: "Dirección de obra",
-      desc: "Seguimiento en sitio hasta la entrega, con control y certificación de lo efectivamente ejecutado.",
+      title: "Trabajo Integrado",
+      desc: "Las mejores obras nacen del trabajo en equipo. Fomentamos una sinergia fluida y transparente entre el cliente, el equipo de estudio y los contratistas de obra.",
     },
   ],
 };
@@ -382,9 +382,9 @@ export const contacto = {
 
 export const media = {
   heroVideo: {
-    src: "/video/hero.mp4",
-    poster: "/video/hero-poster.jpg",
-    objectPosition: "50% 62%",
+    src: "/video/banner-video.mp4",
+    poster: "/video/banner-video-poster.jpg",
+    objectPosition: "50% 50%",
   },
   // Banda de apertura de la sección Proyectos. (Método NO lleva video:
   // el cliente pidió fondo negro pleno para esa sección.)
