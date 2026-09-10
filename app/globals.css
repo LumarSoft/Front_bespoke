@@ -219,6 +219,18 @@ html.lenis body {
   font-weight: 500;
 }
 
+/*
+  Misma pieza pero en caja baja: el cliente pidió (revisión 2) que el «de» de
+  "de habitar un lugar" vaya en minúscula, conservando el tamaño chico y el
+  interletrado abierto del gesto del logotipo.
+*/
+.versalitas-min {
+  font-family: var(--font-sans), sans-serif;
+  text-transform: lowercase;
+  letter-spacing: 0.34em;
+  font-weight: 500;
+}
+
 .eyebrow {
   font-family: var(--font-sans), sans-serif;
   text-transform: uppercase;
@@ -459,6 +471,9 @@ html.lenis body {
 .hero-d3 {
   animation-delay: 0.95s;
 }
+.hero-d4 {
+  animation-delay: 1.15s;
+}
 
 /* ── Menú mobile (components/navbar.tsx) ── */
 
@@ -584,5 +599,118 @@ html.lenis body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   Visor de fotos de obra (components/obra-card.tsx)
+
+   Es un `<dialog>` abierto con `showModal()`, así que vive en la top layer del
+   navegador: queda por encima del navbar y del grano sin depender de z-index.
+   Lo que sigue es sólo apariencia — el diálogo trae de fábrica el cierre con
+   Escape, el atrapado del foco y el `::backdrop`.
+   ============================================================ */
+
+.visor {
+  position: fixed;
+  inset: 0;
+  /* El `<dialog>` nativo viene con ancho, alto, borde, margen y padding
+     propios; sin resetearlos la foto queda encajonada en el centro. */
+  width: 100vw;
+  height: 100svh;
+  max-width: 100vw;
+  max-height: 100svh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--negro) 92%, transparent);
+
+  /*
+    La duración declarada acá es la del CIERRE —es el estado al que vuelve el
+    elemento— y la del bloque `[open]`, la de la apertura. Cerrar tiene que
+    sentirse inmediato: al tocar fuera de la foto uno quiere volver a la
+    página, no mirar una animación de salida.
+
+    `allow-discrete` es lo que permite animar algo que pasa de `display: none`
+    a visible; sin eso el fundido sólo se vería en una dirección.
+  */
+  opacity: 0;
+  transition:
+    opacity 130ms ease-out,
+    overlay 130ms allow-discrete,
+    display 130ms allow-discrete;
+}
+.visor[open] {
+  opacity: 1;
+  transition:
+    opacity 300ms var(--ease-out-expo),
+    overlay 300ms allow-discrete,
+    display 300ms allow-discrete;
+}
+@starting-style {
+  .visor[open] {
+    opacity: 0;
+  }
+}
+
+/*
+  El fondo va sin `backdrop-filter` a propósito.
+
+  Con desenfoque, al cerrar quedaba un resto sucio en pantalla: el navegador
+  sostiene la capa de composición del filtro mientras el elemento sigue en la
+  top layer, así que el blur sobrevivía al fundido y se notaba más que el
+  efecto. Un negro translúcido separa igual de bien el visor de la página, se
+  va cuando se le dice y además no cuesta GPU.
+*/
+.visor::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+  opacity: 0;
+  transition:
+    opacity 130ms ease-out,
+    overlay 130ms allow-discrete,
+    display 130ms allow-discrete;
+}
+.visor[open]::backdrop {
+  opacity: 1;
+  transition:
+    opacity 300ms var(--ease-out-expo),
+    overlay 300ms allow-discrete,
+    display 300ms allow-discrete;
+}
+@starting-style {
+  .visor[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+/*
+  Cada foto entra con su propio fundido: ver la nota del `key` en el componente.
+
+  Sin `both` a propósito. Con relleno hacia atrás, el estado en reposo de la
+  imagen pasa a ser el primer fotograma —opacidad 0— y basta con que la
+  animación no llegue a correr (pestaña en segundo plano, motor de animación
+  detenido) para que la foto quede invisible. Sin relleno, el estado por
+  defecto es la foto visible y la animación sólo agrega el fundido.
+*/
+.visor__foto {
+  animation: visor-foto 420ms var(--ease-out-expo);
+}
+@keyframes visor-foto {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visor,
+  .visor__foto {
+    transition: none;
+    animation: none;
   }
 }

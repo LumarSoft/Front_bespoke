@@ -36,10 +36,6 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink"
       />
 
-      <p className="eyebrow hero-rise hero-d1 relative mx-auto text-paper/70">
-        Estudio de arquitectura · {studio.location}
-      </p>
-
       <div className="relative flex flex-1 flex-col items-center justify-center text-center">
         {/*
           El logo ES el H1 de la home. Antes el hero no tenía ningún encabezado
@@ -85,11 +81,20 @@ export default function Hero() {
           Cada detalle, una <span className="type-emphasis text-clay-soft">decisión</span> de
           diseño.
         </p>
+
+        {/*
+          El antetítulo va acá abajo y no arriba del logo: el cliente pidió
+          dejar libre la franja superior para que la marca entre sola en el
+          encuadre. Cierra el escalonado de entrada, después de la bajada.
+        */}
+        <p className="eyebrow hero-rise hero-d3 mt-8 text-paper/70">
+          Estudio de arquitectura · {studio.locationShort}
+        </p>
       </div>
 
       <a
         href="#estudio"
-        className="group hero-fade hero-d3 relative mx-auto flex flex-col items-center gap-3 text-[0.65rem] uppercase tracking-[0.35em] text-paper/60 transition-colors hover:text-paper"
+        className="group hero-fade hero-d4 relative mx-auto flex flex-col items-center gap-3 text-[0.65rem] uppercase tracking-[0.35em] text-paper/60 transition-colors hover:text-paper"
       >
         <span>Scroll</span>
         <span className="grid size-10 place-items-center rounded-full border border-paper/25 transition-colors group-hover:border-paper/60">

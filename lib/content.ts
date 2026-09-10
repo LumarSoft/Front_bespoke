@@ -7,12 +7,20 @@
 // NOTA: el cliente está produciendo el contenido definitivo de cada sección.
 // Todo lo marcado con `TODO(contenido)` es texto puente y debe reemplazarse.
 
+import { MEDIDAS } from "@/lib/proyectos-fotos";
+
 export const studio = {
   name: "Bespoke",
   full: "Bespoke Arquitectura",
   tagline: "Arquitectura hecha a medida",
   lead: "Arq. Cintia Colazzo",
   location: "Rosario · Santa Fe · Argentina",
+  /**
+   * Variante sin provincia — es la que pidió el cliente para el antetítulo del
+   * hero (revisión 2: "reemplazar el texto inferior por el superior SIN la
+   * provincia"). El resto del sitio sigue usando `location` completa.
+   */
+  locationShort: "Rosario · Argentina",
   since: 2016,
 };
 
@@ -66,7 +74,7 @@ export const estudio = {
         { text: "experiencia", tone: "black" },
       ],
       [
-        { text: "de", tone: "versal" },
+        { text: "de", tone: "minuscula" },
         { text: "habitar", tone: "italic" },
         { text: "un lugar.", tone: "regular" },
       ],
@@ -196,15 +204,35 @@ export const metodo = {
    resuelta con `data-portfolio` en globals.css.
    ============================================================ */
 
+/** Una ficha de datos al pie de la obra (etiqueta + valor). */
+export type Dato = { label: string; value: string };
+
+export type Foto = {
+  src: string;
+  alt: string;
+  /** Medidas reales del archivo. Las horizontales y verticales conviven. */
+  width: number;
+  height: number;
+};
+
 export type Proyecto = {
   slug: string;
   name: string;
+  /** Localidad, bajo el nombre de la obra. */
   place: string;
-  year: string;
-  surface?: string;
-  material?: string;
-  excerpt: string;
-  cover: { src: string; alt: string };
+  /**
+   * Fichas de la obra. Cambian según el portfolio, tal como pidió el cliente en
+   * la revisión 2: Residencial → Alcance · Espacios; Comercial → Ubicación ·
+   * Superficie. Ya no van ni «Año» ni «Materia».
+   */
+  datos: Dato[];
+  /** Los dos bloques de la planilla de obras: el problema y cómo se resolvió. */
+  desafio: string;
+  propuesta: string;
+  /** Foto de portada: la que se ve en el listado y la que morfea al detalle. */
+  cover: Foto;
+  /** Resto del material de la obra. La portada se filtra al renderizar. */
+  gallery: Foto[];
 };
 
 export type Portfolio = {
@@ -214,80 +242,135 @@ export type Portfolio = {
   theme: "residencial" | "comercial";
   title: string;
   intro: string;
-  cover: { src: string; alt: string };
+  cover: Foto;
   proyectos: Proyecto[];
 };
 
-// TODO(contenido): el cliente va a enviar las obras reales de cada portfolio.
-// Las de abajo son puente y usan las imágenes ya presentes en /public/projects.
+/**
+ * Las fotos de cada obra viven numeradas 01..N dentro de su carpeta, así que
+ * alcanza con decir cuántas hay. El `alt` describe la obra y lleva el número:
+ * sin eso, diez fotos de la misma casa se anunciarían todas igual.
+ *
+ * Las medidas salen de `lib/proyectos-fotos.ts`, que se genera leyendo los
+ * archivos. Es lo que permite que la galería respete la proporción real de
+ * cada toma en lugar de recortarlas todas al mismo cuadro.
+ */
+const galeria = (
+  portfolio: Portfolio["slug"],
+  obra: string,
+  total: number,
+  alt: string,
+): Foto[] =>
+  Array.from({ length: total }, (_, i) => {
+    const src = `/proyectos/${portfolio}/${obra}/${String(i + 1).padStart(2, "0")}.jpg`;
+    return foto(src, `${alt} — foto ${i + 1} de ${total}`);
+  });
+
+/**
+ * Arma una foto con sus medidas reales.
+ *
+ * Si el archivo no está en el mapa, corta el build en lugar de seguir con una
+ * imagen sin dimensiones: significa que se agregó una ruta a mano sin volver a
+ * generar `proyectos-fotos.ts`, y es mucho más barato enterarse acá que ver la
+ * galería desarmada en producción.
+ */
+const foto = (src: string, alt: string): Foto => {
+  const medidas = MEDIDAS[src];
+  if (!medidas) {
+    throw new Error(
+      `Falta la medida de ${src}. Regenerá lib/proyectos-fotos.ts a partir de /public/proyectos.`,
+    );
+  }
+  return { src, alt, width: medidas[0], height: medidas[1] };
+};
+
+/**
+ * Obras reales del estudio. Los textos salen de la planilla que compartió el
+ * cliente y las fotos del drive, normalizadas a JPG web en
+ * `/public/proyectos/<portfolio>/<obra>/` — los originales, con HEIC y nombres
+ * con espacios, quedaron fuera del deploy.
+ */
 export const portfolios: Record<Portfolio["slug"], Portfolio> = {
   residencial: {
     slug: "residencial",
     label: "Residencial",
     theme: "residencial",
-    title: "Casas hechas a la medida de quien las habita",
+    title: "Tu forma de habitar el espacio como eje del diseño",
     intro:
-      "Viviendas donde el programa nace de una forma de vivir concreta: la luz, el recorrido y la materia se ajustan a las personas, no al revés.",
-    cover: {
-      src: "/projects/exterior-trees.jpg",
-      alt: "Vivienda unifamiliar entre árboles",
-    },
+      "Viviendas que nacen de la forma de habitar de cada cliente, utilizando nuestra libertad creativa para diseñar hogares.",
+    cover: foto("/proyectos/portada-residencial.jpg", "Estar de una vivienda proyectada por Bespoke Arquitectura"),
     proyectos: [
       {
-        slug: "estancia-estrella-federal",
-        name: "Estancia Estrella Federal",
-        place: "Ramallo · Buenos Aires",
-        year: "2021",
-        surface: "90 m²",
-        material: "Hormigón visto",
-        excerpt:
-          "Un único volumen alargado de hormigón visto, tendido sobre el campo. El área social en un extremo, la íntima en el otro y una galería central que abre al paisaje.",
-        cover: {
-          src: "/projects/facade-glass.jpg",
-          alt: "Fachada de cristal de la Estancia Estrella Federal",
-        },
-      },
-      {
-        slug: "casa-hogar",
-        name: "Casa Hogar",
+        slug: "barcala",
+        name: "Barcala",
         place: "Rosario · Santa Fe",
-        year: "2022",
-        surface: "180 m²",
-        material: "Ladrillo & madera",
-        excerpt:
-          "El estar se ordena alrededor del hogar: un núcleo macizo que organiza la planta y regula la temperatura de toda la casa.",
-        cover: {
-          src: "/projects/hearth.jpg",
-          alt: "Estar con hogar a leña",
-        },
+        datos: [
+          { label: "Alcance", value: "Reciclado" },
+          { label: "Espacios", value: "2 dormitorios · 2 baños" },
+        ],
+        desafio:
+          "La vivienda original presentaba una distribución fragmentada y desconectada de sus áreas exteriores. El comedor sufría de poca iluminación natural y una relación incómoda con el garaje, mientras que el patio posterior permanecía aislado de la vida social de la casa. El reto consistía en reorganizar la estructura existente para responder a la dinámica de una familia.",
+        propuesta:
+          "Ubicamos la cochera en el frente del terreno para despejar el espacio del fondo. Esto nos permitió crear un área social amplia, continua y llena de luz natural, conectada directamente con la galería y el patio. Los dormitorios se reubicaron hacia el frente para ganar mayor intimidad, logrando una casa práctica, luminosa y capaz de adaptarse a los cambios de la vida familiar con el paso del tiempo.",
+        cover: foto(
+          "/proyectos/residencial/barcala/02.jpg",
+          "Cocina con isla y piso damero de la vivienda en Barcala",
+        ),
+        gallery: galeria("residencial", "barcala", 3, "Vivienda en Barcala"),
       },
       {
-        slug: "casa-escalera",
-        name: "Casa Escalera",
-        place: "Funes · Santa Fe",
-        year: "2023",
-        surface: "240 m²",
-        material: "Hormigón & acero",
-        excerpt:
-          "Una escalera escultórica como columna vertebral: conecta los tres niveles y lleva luz cenital hasta la planta baja.",
-        cover: {
-          src: "/projects/stair.jpg",
-          alt: "Escalera escultórica con luz cenital",
-        },
+        slug: "pasco",
+        name: "Pasco",
+        place: "Rosario · Santa Fe",
+        datos: [
+          { label: "Alcance", value: "Reforma" },
+          { label: "Espacios", value: "3 dormitorios · 2 baños" },
+        ],
+        desafio:
+          "Adaptar un departamento de tres dormitorios a la vida cotidiana de una pareja, logrando un cambio profundo a partir de la puesta en valor de los materiales originales. La cocina resultaba incómoda, con poco espacio y un diseño que dificultaba la distribución de los electrodomésticos. Además, los baños necesitaban una actualización completa y la vivienda en general pedía renovar sus ambientes respetando la estructura del departamento.",
+        propuesta:
+          "Rediseñamos la cocina para hacerla más cómoda y funcional, renovando la abertura hacia el balcón para sumar la iluminación natural, mejorar la ventilación y conectar el espacio con el exterior. En lugar de demoler o reemplazar todo, elegimos restaurar pisos, paredes y puertas originales. Concentramos la inversión en los espacios de mayor uso, cocina y baños, y recuperamos lo que ya tenía valor, logrando una transformación equilibrada que potencia el espacio y responde al estilo de vida de sus dueños.",
+        cover: foto(
+          "/proyectos/residencial/pasco/01.jpg",
+          "Isla curva revestida en listones de madera en el departamento de Pasco",
+        ),
+        gallery: galeria("residencial", "pasco", 11, "Departamento en Pasco"),
       },
       {
-        slug: "casa-cocina",
-        name: "Casa de la Cocina Abierta",
-        place: "Roldán · Santa Fe",
-        year: "2023",
-        surface: "150 m²",
-        material: "Madera & piedra",
-        excerpt:
-          "La cocina deja de ser un cuarto de servicio y pasa a ser el centro social de la casa, abierta al patio y a la galería.",
-        cover: {
-          src: "/projects/kitchen.jpg",
-          alt: "Cocina abierta integrada al patio",
-        },
+        slug: "kentucky",
+        name: "Kentucky",
+        place: "Rosario · Santa Fe",
+        datos: [
+          { label: "Alcance", value: "Reforma" },
+          { label: "Espacios", value: "4 dormitorios · 4 baños" },
+        ],
+        desafio:
+          "La vivienda contaba con una escalera de presencia imponente, pero la falta de una baranda adecuada dejaba el ambiente incompleto y no le permitía lucirse. El reto consistió en resolver esta necesidad funcional mediante un diseño a medida que dialogara con la arquitectura existente, respetando sus proporciones sin restarle protagonismo al espacio.",
+        propuesta:
+          "Diseñamos una baranda integral trabajando cuidadosamente su forma, escala y materiales para acompañar las líneas de la estructura. Esta nueva pieza completa la composición del ambiente y transforma un detalle de seguridad en el elemento central de la vivienda, demostrando cómo una intervención puntual y bien pensada puede renovar por completo el carácter de una casa.",
+        cover: foto(
+          "/proyectos/residencial/kentucky/02.jpg",
+          "Escalera caracol con baranda de herrería a medida bajo un lucernario circular",
+        ),
+        gallery: galeria("residencial", "kentucky", 3, "Vivienda en Kentucky"),
+      },
+      {
+        slug: "colon",
+        name: "Colón",
+        place: "Rosario · Santa Fe",
+        datos: [
+          { label: "Alcance", value: "Reforma" },
+          { label: "Espacios", value: "Loft · 1 baño" },
+        ],
+        desafio:
+          "Aprovechar al máximo los metros cuadrados de un loft de planta abierta, donde la falta de paredes genera dos problemas comunes: la pérdida de privacidad y la falta de lugares de guardado. El reto consistió en delimitar los diferentes sectores de la vivienda y sumar almacenamiento sin recargar el ambiente ni perder la amplitud y luz características de este tipo de espacios.",
+        propuesta:
+          "Diseñamos el mobiliario a medida como el gran articulador del proyecto. Creamos un mueble multifunción, con cava, estación de café y guardado, que conecta la cocina con el dormitorio, e incorporamos un cerramiento liviano que aporta privacidad sin aislar la luz. Además, sumamos espacio bajo la cama y un espejo corredizo para ganar practicidad y profundidad. Combinando materiales cálidos, texturas e iluminación bien pensada, logramos un hogar funcional, donde cada centímetro está optimizado sin perder la fluidez espacial.",
+        cover: foto(
+          "/proyectos/residencial/colon/01.jpg",
+          "Mueble multifunción de madera que articula cocina y dormitorio en el loft de Colón",
+        ),
+        gallery: galeria("residencial", "colon", 4, "Loft en Colón"),
       },
     ],
   },
@@ -296,83 +379,98 @@ export const portfolios: Record<Portfolio["slug"], Portfolio> = {
     slug: "comercial",
     label: "Comercial",
     theme: "comercial",
-    title: "Espacios que trabajan tan bien como se ven",
+    title: "El espacio comercial como escenario de una marca",
     intro:
-      "Locales, oficinas y espacios de uso público resueltos con criterio de marca, flujo de personas y durabilidad de los materiales.",
-    cover: {
-      src: "/projects/aerial-field.jpg",
-      alt: "Vista aérea de emplazamiento comercial",
-    },
+      "Locales comerciales y oficinas diseñados con identidad de marca, funcionalidad y excelencia técnica.",
+    cover: foto("/proyectos/portada-comercial.jpg", "Frente de tienda Zara ejecutada por Bespoke Arquitectura"),
     proyectos: [
       {
-        slug: "galeria",
-        name: "Galería Central",
+        slug: "i-am",
+        name: "I AM",
         place: "Rosario · Santa Fe",
-        year: "2022",
-        surface: "420 m²",
-        material: "Acero & vidrio",
-        excerpt:
-          "Un vacío central ordena la circulación y reparte luz natural a los locales de ambos niveles sin necesidad de iluminación artificial diurna.",
-        cover: {
-          src: "/projects/gallery.jpg",
-          alt: "Galería comercial con vacío central",
-        },
+        datos: [
+          { label: "Ubicación", value: "Shopping Portal Rosario" },
+          { label: "Superficie", value: "90 m²" },
+        ],
+        desafio:
+          "Desarrollar un local de 90 m² en Portal Rosario partiendo desde cero, con la necesidad de crear una identidad visual atractiva que respetara la normativa del shopping. El reto principal fue coordinar integralmente el proyecto, desde la distribución espacial y el diseño de mobiliario a medida hasta los trámites técnicos exigidos por el centro comercial, asegurando una ejecución impecable dentro de un plazo y un presupuesto estrictos.",
+        propuesta:
+          "Proyectamos un espacio funcional y coherente con la marca, gestionando el proceso de punta a punta: armamos la documentación técnica para la aprobación del shopping y dirigimos la obra con foco en los detalles de terminación. Gracias a una planificación rigurosa que integró diseño, gestión y control en obra, logramos plasmar la idea en un local listo para funcionar, cumpliendo en tiempo y forma con los recursos previstos.",
+        cover: foto(
+          "/proyectos/comercial/i-am/05.jpg",
+          "Frente iluminado del local I AM en el Shopping Portal Rosario",
+        ),
+        gallery: galeria("comercial", "i-am", 6, "Local I AM en Portal Rosario"),
       },
       {
-        slug: "oficinas-carballo",
-        name: "Oficinas Carballo",
-        place: "Rosario · Santa Fe",
-        year: "2023",
-        surface: "310 m²",
-        material: "Hormigón & cristal",
-        excerpt:
-          "Planta libre con núcleos de servicio en los extremos: máxima flexibilidad para reconfigurar los puestos sin obra.",
-        cover: {
-          src: "/projects/interior-view.jpg",
-          alt: "Interior de oficinas con planta libre",
-        },
+        slug: "zara-concepcion",
+        name: "Zara",
+        place: "Concepción · Chile",
+        datos: [
+          { label: "Ubicación", value: "Concepción, Chile" },
+          { label: "Superficie", value: "3.500 m²" },
+        ],
+        desafio:
+          "Coordinar la ejecución de una obra a gran escala de 3.500 m² distribuida en dos plantas, con la exigencia de estándares internacionales de calidad. El reto principal radicó en organizar a múltiples equipos de trabajo en simultáneo, garantizar terminaciones impecables en cada rincón y resolver los imprevistos diarios sin desviarse de la fecha límite de apertura.",
+        propuesta:
+          "Implementamos una metodología de trabajo basada en el seguimiento diario y una planificación rigurosa por etapas. Asumimos el control total de los rubros, supervisando minuciosamente la precisión de los detalles constructivos y la calidad de los materiales. Esto nos permitió coordinar el avance de ambas plantas a paso firme y lograr que la tienda abriera sus puertas dentro del plazo previsto y con la máxima exigencia comercial.",
+        cover: foto(
+          "/proyectos/comercial/zara-concepcion/04.jpg",
+          "Salón de venta de la tienda Zara en Concepción, Chile",
+        ),
+        gallery: galeria("comercial", "zara-concepcion", 4, "Tienda Zara en Concepción"),
       },
       {
-        slug: "pabellon-dusk",
-        name: "Pabellón de Usos Múltiples",
-        place: "Ramallo · Buenos Aires",
-        year: "2024",
-        surface: "600 m²",
-        material: "Estructura metálica",
-        excerpt:
-          "Una gran cubierta liviana sobre un basamento de hormigón: cubre el programa completo y deja los laterales abiertos al parque.",
-        cover: {
-          src: "/projects/dusk-glow.jpg",
-          alt: "Pabellón iluminado al atardecer",
-        },
+        slug: "zara-alto-rosario",
+        name: "Zara",
+        place: "Rosario · Santa Fe",
+        datos: [
+          { label: "Ubicación", value: "Shopping Alto Rosario" },
+          { label: "Superficie", value: "4.000 m²" },
+        ],
+        desafio:
+          "Transformar y unificar siete locales comerciales independientes dentro de Alto Rosario para consolidar una única tienda de 4.000 m². Una obra de esta magnitud exigió coordinar múltiples gremios en simultáneo, resolver la complejidad técnica de integrar estructuras previas y mantener un control riguroso de calidad en cada superficie, todo bajo la presión de un cronograma estricto para no demorar la fecha de apertura.",
+        propuesta:
+          "Llevamos adelante una dirección de obra con seguimiento continuo en el terreno, organizando las etapas de trabajo de forma estratégica para sostener un ritmo constante. Nos enfocamos en la precisión de los detalles constructivos, el control de las terminaciones y la gestión eficiente de los tiempos. Gracias a esta metodología, logramos integrar con éxito los espacios y entregar la tienda terminada bajo los estándares más exigentes del shopping, cumpliendo en tiempo y forma con el plazo de apertura.",
+        cover: foto(
+          "/proyectos/comercial/zara-alto-rosario/03.jpg",
+          "Salón unificado de la tienda Zara en el Shopping Alto Rosario",
+        ),
+        gallery: galeria("comercial", "zara-alto-rosario", 10, "Tienda Zara en Alto Rosario"),
       },
     ],
   },
 };
+
+/** Busca una obra por su portfolio y su slug. Devuelve también el portfolio. */
+export function buscarProyecto(categoria: string, obra: string) {
+  const portfolio = portfolios[categoria as Portfolio["slug"]];
+  const proyecto = portfolio?.proyectos.find((p) => p.slug === obra);
+  return proyecto ? { portfolio, proyecto } : null;
+}
 
 export const portfolioList = Object.values(portfolios);
 
 export const proyectosSection = {
   eyebrow: "Proyectos",
   title: "Dos maneras de trabajar a medida",
-  intro:
-    "Cada portfolio tiene su propia lógica, sus propios tiempos y su propia identidad. Elegí por dónde entrar.",
+  intro: "Creamos soluciones únicas mediante la gestión integral 360.",
 };
 
 /* ============================================================
    4 · CONTACTO
    ============================================================ */
 
-const WHATSAPP_LOCAL = "341 250 2267";
-const WHATSAPP_E164 = "5493412502267";
+const WHATSAPP_LOCAL = "+54 9 341 3145417";
+const WHATSAPP_E164 = "5493413145417";
 
 export const contacto = {
   email: "info@bespokearquitectura.com.ar",
   emailHref: "mailto:info@bespokearquitectura.com.ar",
   whatsapp: WHATSAPP_LOCAL,
+  whatsappE164: `+${WHATSAPP_E164}`,
   whatsappHref: `https://wa.me/${WHATSAPP_E164}`,
-  // TODO(contenido): confirmar con el cliente si la dirección sigue vigente.
-  address: "Av. Cándido Carballo 183 · Piso 3 of. 1",
+  address: "San Lorenzo 933 · Piso 7 of. 2",
   city: "Rosario · Santa Fe",
 };
 

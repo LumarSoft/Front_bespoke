@@ -30,10 +30,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.8,
-      images: [
-        `${SITE_URL}${portfolio.cover.src}`,
-        ...portfolio.proyectos.map((obra) => `${SITE_URL}${obra.cover.src}`),
-      ],
+      // Todas las fotos de todas las obras del portfolio: en arquitectura la
+      // búsqueda por imágenes es una puerta de entrada real, y desde que las
+      // galerías viven dentro de un diálogo, el sitemap es la única forma que
+      // tiene Google de descubrirlas.
+      images: portfolio.proyectos.flatMap((obra) =>
+        obra.gallery.map((foto) => `${SITE_URL}${foto.src}`),
+      ),
     })),
   ];
 }

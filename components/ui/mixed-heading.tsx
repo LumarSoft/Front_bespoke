@@ -14,8 +14,9 @@ import { cn } from "@/lib/utils";
  *   regular  — Montserrat Light, el cuerpo del titular
  *   italic   — itálica ligera en terracota: la palabra clave
  *   versal   — versalitas con interletrado abierto, el gesto del logotipo
+ *   minuscula — el mismo gesto en caja baja (el «de» de "de habitar")
  */
-export type Tone = "black" | "regular" | "italic" | "versal";
+export type Tone = "black" | "regular" | "italic" | "versal" | "minuscula";
 export type Fragment = { text: string; tone: string };
 
 const TONE_CLASS: Record<Tone, string> = {
@@ -23,6 +24,7 @@ const TONE_CLASS: Record<Tone, string> = {
   regular: "font-display font-light",
   italic: "type-emphasis text-accent",
   versal: "versalitas text-[0.42em] align-middle",
+  minuscula: "versalitas-min text-[0.42em] align-middle",
 };
 
 function toneClass(tone: string) {

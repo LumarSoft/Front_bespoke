@@ -37,7 +37,7 @@ const organizacion = {
   },
   email: contacto.email,
   // Mismo número que el botón de WhatsApp, en formato internacional.
-  telephone: "+5493412502267",
+  telephone: contacto.whatsappE164,
   foundingDate: String(studio.since),
   founder: {
     "@type": "Person",
@@ -45,9 +45,6 @@ const organizacion = {
     jobTitle: "Arquitecta",
     sameAs: [PERFILES.instagramLead, PERFILES.archdaily],
   },
-  // TODO(cliente): la calle sale de `contacto.address`, que todavía es la del
-  // sitio viejo. La firma de los mails de Ciro dice otra. Hay que confirmarla
-  // antes de publicar: de acá se alimenta la ficha de Google.
   address: {
     "@type": "PostalAddress",
     streetAddress: contacto.address,
@@ -154,13 +151,23 @@ export function portfolioJsonLd(slug: "residencial" | "comercial") {
           position: i + 1,
           item: {
             "@type": "CreativeWork",
+            "@id": `${url}#${obra.slug}`,
             name: obra.name,
-            description: obra.excerpt,
-            dateCreated: obra.year,
+            description: obra.propuesta || portfolio.intro,
+            // El desafío no es la descripción de la obra, es su punto de partida.
+            ...(obra.desafio ? { abstract: obra.desafio } : {}),
             locationCreated: { "@type": "Place", name: obra.place },
             creator: { "@id": ORG_ID },
-            image: `${SITE_URL}${obra.cover.src}`,
-            ...(obra.material ? { material: obra.material } : {}),
+            image: obra.gallery.map((foto) => `${SITE_URL}${foto.src}`),
+            // Las fichas de la obra (Alcance/Espacios o Ubicación/Superficie)
+            // viajan como propiedades declaradas, no como texto suelto.
+            additionalProperty: obra.datos
+              .filter((d) => d.value)
+              .map((d) => ({
+                "@type": "PropertyValue",
+                name: d.label,
+                value: d.value,
+              })),
           },
         })),
       },

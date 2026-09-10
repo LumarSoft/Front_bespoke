@@ -82,11 +82,6 @@ export default function Proyectos() {
                   <p className="max-w-md text-sm leading-relaxed text-on-surface-muted">
                     {portfolio.intro}
                   </p>
-
-                  <span className="mt-2 border-t border-hairline pt-5 text-xs uppercase tracking-[0.2em] text-on-surface-muted">
-                    {portfolio.proyectos.length}{" "}
-                    {portfolio.proyectos.length === 1 ? "obra" : "obras"}
-                  </span>
                 </div>
               </Link>
             </Reveal>

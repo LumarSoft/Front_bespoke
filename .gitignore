@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Fotos originales del drive del cliente (HEIC + nombres con espacios).
+# La versión web optimizada vive en /public/proyectos y es la que se publica.
+/public/Residenciales/
+/public/Comerciales/

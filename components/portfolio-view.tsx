@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { portfolioList, type Portfolio } from "@/lib/content";
 import { Reveal } from "@/components/ui/reveal";
+import ObraCard from "@/components/obra-card";
 
 /**
  * Color de la cortina de transición, uno por portfolio. Son los dos extremos
@@ -15,7 +16,12 @@ const CURTAIN: Record<Portfolio["theme"], { panel: string; eyebrow: string }> = 
 };
 
 /**
- * Vista de un portfolio completo (Residencial o Comercial).
+ * Listado de un portfolio (Residencial o Comercial).
+ *
+ * Cada obra es una tarjeta rectangular que muestra todo lo suyo: la foto, el
+ * número, el nombre, la localidad, el desafío, la propuesta y sus fichas de
+ * datos. La galería completa no ocupa lugar hasta que hace falta — ver
+ * components/obra-card.tsx.
  *
  * La identidad de color no está hardcodeada: se activa con `data-portfolio`
  * en el contenedor, que re-mapea los tokens semánticos (surface / on-surface /
@@ -52,9 +58,7 @@ export default function PortfolioView({ portfolio }: { portfolio: Portfolio }) {
       </div>
 
       {/* Portada */}
-      <header
-        className="relative flex min-h-[70svh] items-end overflow-hidden bg-ink text-paper"
-      >
+      <header className="relative flex min-h-[70svh] items-end overflow-hidden bg-ink text-paper">
         {/* Elemento LCP de esta página: mismo criterio que el hero. */}
         <Image
           src={portfolio.cover.src}
@@ -99,59 +103,11 @@ export default function PortfolioView({ portfolio }: { portfolio: Portfolio }) {
           </span>
         </div>
 
-        <ul className="mt-16 flex flex-col gap-24 sm:gap-32">
+        <ul className="mt-16 flex flex-col gap-10 sm:gap-14">
           {portfolio.proyectos.map((proyecto, i) => (
-            <li key={proyecto.slug}>
-              <Reveal>
-                <article
-                  className={`grid items-center gap-10 lg:grid-cols-2 lg:gap-16 ${
-                    i % 2 === 1 ? "lg:[&>figure]:order-2" : ""
-                  }`}
-                >
-                  <figure className="relative aspect-4/3 overflow-hidden rounded-2xl bg-surface-alt">
-                    <Image
-                      src={proyecto.cover.src}
-                      alt={proyecto.cover.alt}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-cover"
-                    />
-                  </figure>
-
-                  <div>
-                    <span className="font-sans text-xs tabular-nums tracking-[0.2em] text-accent">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="mt-4 font-display text-3xl font-light leading-tight tracking-[-0.01em] sm:text-4xl">
-                      {proyecto.name}
-                    </h3>
-                    <p className="mt-3 text-sm uppercase tracking-[0.14em] text-on-surface-muted">
-                      {proyecto.place}
-                    </p>
-                    <p className="mt-6 max-w-md text-base leading-relaxed text-on-surface-muted">
-                      {proyecto.excerpt}
-                    </p>
-
-                    <dl className="mt-8 grid grid-cols-3 gap-6 border-t border-hairline pt-6">
-                      {[
-                        { k: "Año", v: proyecto.year },
-                        { k: "Superficie", v: proyecto.surface },
-                        { k: "Materia", v: proyecto.material },
-                      ]
-                        .filter((f) => f.v)
-                        .map((f) => (
-                          <div key={f.k}>
-                            <dt className="text-xs uppercase tracking-[0.16em] text-on-surface-muted">
-                              {f.k}
-                            </dt>
-                            <dd className="mt-1 font-display text-xl font-light">{f.v}</dd>
-                          </div>
-                        ))}
-                    </dl>
-                  </div>
-                </article>
-              </Reveal>
-            </li>
+            <Reveal as="li" key={proyecto.slug}>
+              <ObraCard proyecto={proyecto} indice={i} />
+            </Reveal>
           ))}
         </ul>
       </section>
