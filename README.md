@@ -74,6 +74,6 @@ markup de los dos portfolios es el mismo.
 
 ## Pendientes
 
-Ver `docs/` y los `TODO(contenido)` / `TODO(cliente)` en el código. Los dos
-grandes: el contenido definitivo del estudio y confirmar el dominio final
-(`arquitecturabespoke.ar` vs `bespokearquitectura.com.ar`).
+Ver `docs/` y los `TODO(contenido)` / `TODO(cliente)` en el código. El dominio
+definitivo confirmado para la puesta en producción es
+`bespokearquitectura.com.ar`; resta validar el contenido definitivo del estudio.

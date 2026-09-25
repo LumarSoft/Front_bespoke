@@ -1,14 +1,11 @@
 /**
  * Datos canónicos del sitio y del negocio, en un solo lugar.
  *
- * TODO(cliente): hay dos dominios en juego. El sitio actual vive en
- * `arquitecturabespoke.ar` y el email nuevo que pasó Ciro es
- * `@bespokearquitectura.com.ar`. Falta que Bespoke confirme cuál queda como
- * definitivo: de esta constante dependen las URLs canónicas, el sitemap, los
- * datos estructurados y las tarjetas de Open Graph. Se cambia acá y se
- * propaga a todo el sitio.
+ * Dominio definitivo confirmado por Bespoke para el relanzamiento de marca.
+ * De esta constante dependen las URLs canónicas, el sitemap, los datos
+ * estructurados y las tarjetas de Open Graph.
  */
-export const SITE_URL = "https://arquitecturabespoke.ar";
+export const SITE_URL = "https://bespokearquitectura.com.ar";
 
 /**
  * Ciudad y provincia. Aparecen en los títulos, en las descripciones y en los
