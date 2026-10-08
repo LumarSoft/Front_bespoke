@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowUpRight, Mail, MapPin, MessageCircle } from "lucide-react";
-import { contacto, studio } from "@/lib/content";
+import { contacto } from "@/lib/content";
+import { PERFILES } from "@/lib/site";
 import { Reveal } from "@/components/ui/reveal";
 import MixedHeading from "@/components/ui/mixed-heading";
 
@@ -16,7 +17,9 @@ const TITLE = [
 ] as const;
 
 /**
- * Eje 4 — CONTACTO. Email y WhatsApp como los dos canales principales.
+ * Eje 4 — CONTACTO. Instagram como llamado principal; WhatsApp, email y
+ * dirección en la lista de la derecha. (Revisión 3: el email grande se
+ * repetía con el de la lista, así que su lugar pasó a Instagram.)
  *
  * Sin `"use client"`: el desplazamiento del fondo, que antes era un
  * `useScroll` + `useTransform` de motion, ahora es una animación CSS atada al
@@ -56,14 +59,21 @@ export default function Contacto() {
         <div className="mt-14 flex flex-col gap-10 border-t border-white/15 pt-10 lg:flex-row lg:items-end lg:justify-between">
           <Reveal delay={0.1}>
             <a
-              href={contacto.emailHref}
+              href={PERFILES.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group inline-flex items-center gap-4"
             >
               <span className="grid size-14 place-items-center rounded-full bg-clay text-paper transition-transform duration-500 group-hover:scale-110">
                 <ArrowUpRight className="size-6 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>
-              <span className="font-display text-xl font-light break-all sm:text-3xl">
-                {contacto.email}
+              <span className="flex flex-col">
+                <span className="text-xs uppercase tracking-[0.2em] text-paper/60">
+                  Seguinos en Instagram
+                </span>
+                <span className="font-display text-xl font-light break-all sm:text-3xl">
+                  @bespokearquitectura
+                </span>
               </span>
             </a>
           </Reveal>
@@ -97,9 +107,6 @@ export default function Contacto() {
           </Reveal>
         </div>
 
-        <p className="mt-16 text-sm text-paper/55">
-          {studio.full} · {studio.location}
-        </p>
       </div>
     </section>
   );

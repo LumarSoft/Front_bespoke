@@ -93,15 +93,11 @@ export const estudio = {
   // "Equipo interdisciplinario"
   equipo: {
     title: "Un equipo interdisciplinario",
-    // TODO(contenido): confirmar nómina y roles definitivos con el cliente.
-    intro:
-      "Liderado por la Arq. Cintia Colazzo, Bespoke reúne profesionales de distintas disciplinas para resolver cada obra con precisión técnica y sensibilidad de proyecto.",
-    miembros: [
-      { name: "Arq. Cintia Colazzo", role: "Proyecto & Dirección" },
-      { name: "Arq. Adolfo Shlieper", role: "Proyecto & Dirección" },
-      { name: "Ing. Matías Hagge", role: "Cálculo estructural" },
-      { name: "Ing. Marcelo Donatti", role: "Ejecución de obra" },
-      { name: "Arq. Walter Salcedo", role: "Fotografía" },
+    // Revisión 3: el cliente pidió sacar la nómina con nombres personales y
+    // dejar sólo este texto.
+    parrafos: [
+      "En Bespoke reunimos profesionales, técnicos y especialistas en áreas como arquitectura, desarrollo de proyecto, marketing y gestión. Esta sinergia nos permite abordar cada obra con precisión técnica, visión integral y sensibilidad de proyecto.",
+      "¿Qué significa esto para vos? Que detrás de tu casa hay una estructura organizada para hacerte la vida más fácil: traducimos el estado de la obra a reportes semanales claros y accesibles, gestionamos los números de forma milimétrica para anticiparnos a cualquier cambio y centralizamos todas las decisiones en un solo interlocutor, liberándote de las complicaciones del día a día.",
     ],
     // Imagen de apoyo de la sección.
     image: {
@@ -163,37 +159,59 @@ export const metodo = {
       ],
     ],
   },
-  intro:
-    "Diseñamos y construimos con una visión 360°: articulamos cada etapa con procesos claros, documentación rigurosa y presencia activa antes, durante y después de la entrega.",
+  /** Fragmentos de la intro: los marcados con `strong` van en negrita. */
+  intro: [
+    { text: "En Bespoke, entendemos que cada proyecto es único y no existen recetas estandarizadas. Por eso, transformamos tus necesidades y visión en una obra arquitectónica a través de un proceso de " },
+    { text: "escucha activa y gestión integral 360", strong: true },
+    { text: ". Nuestro compromiso es proteger la calidad de diseño y tu inversión mediante un método estructurado y diseñado para que disfrutes cada etapa de creación sin sorpresas ni improvisaciones." },
+  ],
 
   /**
-   * Las cuatro etapas conservan los íconos del manual que mejor representan
-   * cada concepto dentro del nuevo Método Bespoke.
+   * Las siete etapas del Método Bespoke (revisión 3), cada una con el ícono
+   * del manual que mejor la representa.
    */
   pasos: [
     {
       id: "01",
       icon: icono("Asesoramiento"),
-      title: "Arquitectura a Medida",
-      desc: "Diseñamos a partir de un proceso de escucha activa. No aplicamos soluciones predeterminadas: creamos respuestas espaciales únicas alineadas a la forma de vida de cada cliente.",
+      title: "Reunión Inicial y Diagnóstico",
+      desc: "Nos reunimos para escucharte atentamente. Analizamos el sitio, estudiamos tus necesidades y exploramos las primeras materialidades e ideas conceptuales. Aseguramos desde el día uno que el proyecto refleje tu identidad y necesidades reales, traduciéndolas en una propuesta preliminar clara.",
     },
     {
       id: "02",
-      icon: icono("Planificación"),
-      title: "Soluciones Creativas",
-      desc: "Abordamos cada desafío proyectual sin moldes, transformando las condicionantes de sitio, presupuesto o materialidad en oportunidades para generar arquitectura que emocione y trascienda.",
+      icon: icono("Proyecto"),
+      title: "Diseño General y Distribución",
+      desc: "Pulimos la propuesta elegida integrando el estudio de factibilidad técnico-normativo, la volumetría 3D y la paleta de materiales. Visualizás cómo será tu futuro espacio, con medidas exactas y estimaciones confiables de superficies y una estimación de los costos antes de avanzar a la siguiente etapa.",
     },
     {
       id: "03",
-      icon: icono("Gerenciamiento"),
-      title: "Responsabilidad",
-      desc: "Acompañamos el proyecto de punta a punta. Asumimos el compromiso riguroso de cumplir con la palabra empeñada, los plazos acordados y los estándares técnicos de calidad.",
+      icon: icono("Planificación"),
+      title: "Proyecto Definitivo y Cómputo de Materiales",
+      desc: "Transformamos el anteproyecto en un legajo técnico riguroso, completo e inequívoco (planos de arquitectura, estructuras, instalaciones e iluminación) acompañado de un cómputo métrico detallado. Eliminamos la improvisación en la obra. Al tener cada detalle documentado de antemano, reducimos desviaciones económicas y garantizamos que la ejecución sea fiel al diseño original.",
     },
     {
       id: "04",
+      icon: icono("Somos responsables y comprometidos"),
+      title: "Selección de Contratistas y Presupuestos",
+      desc: "Armamos paquetes de cotización claros y realizamos cuadros comparativos para presentarte a los mejores contratistas y proveedores bajo un esquema competitivo. Accedés a un presupuesto refinado y confiable, sabiendo exactamente qué contratamos y con qué nivel de terminación.",
+    },
+    {
+      id: "05",
+      icon: icono("Gerenciamiento"),
+      title: "Organización Previa y Plan de Obra",
+      desc: "Armamos el calendario general de Proyecto, planificamos compras críticas que requieren anticipación y gestionamos permisos y seguros. Arrancamos la obra con orden y previsibilidad, evitando demoras innecesarias, minimizando tiempos muertos y asegurando un flujo de trabajo ordenado desde el primer día.",
+    },
+    {
+      id: "06",
       icon: icono("Dirección de obra"),
-      title: "Trabajo Integrado",
-      desc: "Las mejores obras nacen del trabajo en equipo. Fomentamos una sinergia fluida y transparente entre el cliente, el equipo de estudio y los contratistas de obra.",
+      title: "Coordinación y Control de Obra",
+      desc: "Supervisamos de cerca el trabajo en la obra para asegurar que todo se construya con el nivel de calidad acordado. Te mantenemos al tanto con reportes periódicos y fotos del avance real. Tenés la tranquilidad de que un equipo experto cuida cada detalle de la obra por vos, manteniendo una comunicación frontal y transparente sobre el estado real del proyecto.",
+    },
+    {
+      id: "07",
+      icon: icono("Amamos lo que hacemos"),
+      title: "Entrega de Llaves y Postventa",
+      desc: "Recorremos juntos toda la propiedad para revisar cada rincón en detalle. Nos aseguramos de que cada terminación quede impecable, te entregamos el manual de uso y mantenimiento de la casa, y firmamos formalmente la entrega final. Recibís tu propiedad lista para disfrutar desde el primer día, con la tranquilidad y la seguridad de que nuestro respaldo y compromiso continúan firme incluso después de terminada la obra.",
     },
   ],
 };
@@ -330,9 +348,10 @@ export const portfolios: Record<Portfolio["slug"], Portfolio> = {
           "Adaptar un departamento de tres dormitorios a la vida cotidiana de una pareja, logrando un cambio profundo a partir de la puesta en valor de los materiales originales. La cocina resultaba incómoda, con poco espacio y un diseño que dificultaba la distribución de los electrodomésticos. Además, los baños necesitaban una actualización completa y la vivienda en general pedía renovar sus ambientes respetando la estructura del departamento.",
         propuesta:
           "Rediseñamos la cocina para hacerla más cómoda y funcional, renovando la abertura hacia el balcón para sumar la iluminación natural, mejorar la ventilación y conectar el espacio con el exterior. En lugar de demoler o reemplazar todo, elegimos restaurar pisos, paredes y puertas originales. Concentramos la inversión en los espacios de mayor uso, cocina y baños, y recuperamos lo que ya tenía valor, logrando una transformación equilibrada que potencia el espacio y responde al estilo de vida de sus dueños.",
+        // Revisión 3: la portada pasa a la cocina (foto 06), que muestra mejor el cambio.
         cover: foto(
-          "/proyectos/residencial/pasco/01.jpg",
-          "Isla curva revestida en listones de madera en el departamento de Pasco",
+          "/proyectos/residencial/pasco/06.jpg",
+          "Cocina renovada con mesada de granito y abertura al balcón en el departamento de Pasco",
         ),
         gallery: galeria("residencial", "pasco", 11, "Departamento en Pasco"),
       },
@@ -461,8 +480,8 @@ export const proyectosSection = {
    4 · CONTACTO
    ============================================================ */
 
-const WHATSAPP_LOCAL = "+54 9 341 3145417";
-const WHATSAPP_E164 = "5493413145417";
+const WHATSAPP_LOCAL = "+54 9 341 349 7270";
+const WHATSAPP_E164 = "5493413497270";
 
 export const contacto = {
   email: "info@bespokearquitectura.com.ar",

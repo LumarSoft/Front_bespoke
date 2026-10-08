@@ -22,7 +22,12 @@ export default function Metodo() {
       className="relative bg-ink px-5 py-28 text-paper sm:px-8 sm:py-40"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-20 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+        {/*
+          La intro de la revisión 3 es un párrafo largo: en la columna angosta
+          de antes quedaba una tira ilegible. Desde `lg` titular e intro se
+          reparten el ancho; por debajo, la intro cae debajo del titular.
+        */}
+        <div className="mb-20 grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-end lg:gap-16">
           <div>
             <Reveal>
               <span className="eyebrow text-clay-soft">{metodo.eyebrow}</span>
@@ -35,8 +40,16 @@ export default function Metodo() {
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <p className="max-w-xs text-sm leading-relaxed text-paper/60">
-              {metodo.intro}
+            <p className="max-w-xl text-base leading-relaxed text-paper/70">
+              {metodo.intro.map((fragmento, i) =>
+                fragmento.strong ? (
+                  <strong key={i} className="font-semibold text-paper">
+                    {fragmento.text}
+                  </strong>
+                ) : (
+                  fragmento.text
+                ),
+              )}
             </p>
           </Reveal>
         </div>
@@ -72,10 +85,12 @@ export default function Metodo() {
                 className="icon-invert col-start-2 row-span-2 hidden size-12 sm:block"
               />
 
-              <h3 className="font-display text-3xl font-light tracking-tight sm:text-5xl">
+              {/* Títulos de hasta cinco palabras: un cuerpo menor que el de
+                  los cuatro pilares anteriores para que no se partan en tres líneas. */}
+              <h3 className="font-display text-2xl font-light tracking-tight sm:text-3xl lg:text-4xl">
                 {paso.title}
               </h3>
-              <p className="col-span-2 mt-3 max-w-md text-sm leading-relaxed text-paper/55 sm:col-span-1 sm:mt-0">
+              <p className="col-span-2 mt-3 max-w-lg text-sm leading-relaxed text-paper/60 sm:col-span-1 sm:mt-0">
                 {paso.desc}
               </p>
             </li>

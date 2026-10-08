@@ -109,29 +109,18 @@ export default function Estudio() {
                 {estudio.equipo.title}
               </h3>
             </Reveal>
-            <Reveal delay={0.08}>
-              <p className="mt-8 max-w-md text-base leading-relaxed text-on-surface-muted sm:text-lg">
-                {estudio.equipo.intro}
-              </p>
-            </Reveal>
-
-            <ul className="mt-12 border-t border-hairline">
-              {estudio.equipo.miembros.map((member, i) => (
-                <Reveal
-                  as="li"
-                  key={member.name}
-                  delay={i * 0.05}
-                  className="flex items-center justify-between gap-6 border-b border-hairline py-5"
+            {estudio.equipo.parrafos.map((parrafo, i) => (
+              <Reveal key={i} delay={0.08 + i * 0.05}>
+                <p
+                  className={[
+                    "max-w-lg text-base leading-relaxed text-on-surface-muted sm:text-lg",
+                    i === 0 ? "mt-8" : "mt-6",
+                  ].join(" ")}
                 >
-                  <span className="font-display text-xl font-light sm:text-2xl">
-                    {member.name}
-                  </span>
-                  <span className="text-right text-xs uppercase tracking-[0.14em] text-on-surface-muted sm:text-sm">
-                    {member.role}
-                  </span>
-                </Reveal>
-              ))}
-            </ul>
+                  {parrafo}
+                </p>
+              </Reveal>
+            ))}
           </div>
 
           <Reveal delay={0.1} className="lg:sticky lg:top-28 lg:self-start">
@@ -143,12 +132,6 @@ export default function Estudio() {
                 sizes="(max-width: 1024px) 100vw, 45vw"
                 className="object-cover"
               />
-              <figcaption className="glass-dark absolute inset-x-4 bottom-4 rounded-2xl px-5 py-4 text-paper">
-                <p className="font-display text-lg">Hecho a medida</p>
-                <p className="mt-0.5 text-xs text-paper/70">
-                  Cada rincón responde a una necesidad concreta.
-                </p>
-              </figcaption>
             </figure>
           </Reveal>
         </div>

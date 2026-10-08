@@ -68,7 +68,7 @@ const organizacion = {
     "Arquitectura sustentable",
   ],
   /**
-   * Catálogo de servicios, tomado de las cinco etapas de Método. No es
+   * Catálogo de servicios, tomado de las siete etapas de Método. No es
    * decorativo: es lo que permite que Google asocie el estudio a búsquedas por
    * servicio ("dirección de obra Rosario") y no sólo por nombre.
    */
